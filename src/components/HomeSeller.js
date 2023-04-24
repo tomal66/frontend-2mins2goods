@@ -2,32 +2,33 @@ import { NavLink } from "react-router-dom";
 import styled from "styled-components";
 import { Button } from "../styles/Button";
 
-const HeroSection = ({ myData }) => {
-    const { name } = myData;
+const HomeSeller = () => {
   return (
     <Wrapper>
       <div className="container">
         <div className="grid grid-two-column">
-          <div className="hero-section-data">
-            <p className="intro-data">Welcome to </p>
-            <h1> {name} </h1>
-            <p>
-              Search and buy products from your locality!
-            </p>
-            <NavLink to="/products">
-              <Button>Shop Now</Button>
-            </NavLink>
-          </div>
           {/* our homepage image  */}
           <div className="hero-section-image">
             <figure>
               <img
-                src="images/hero.jpg"
-                alt="hero-section-photo"
+                src="images/seller.jpg"
+                alt="seller-photo"
                 className="img-style"
               />
             </figure>
           </div>
+
+          <div className="hero-section-data">
+            <p className="intro-data">Have something to sell? </p>
+            <h1> Become a Seller </h1>
+            <p>
+              Find customers in your area
+            </p>
+            <NavLink to="/products">
+              <Button>Register</Button>
+            </NavLink>
+          </div>
+
         </div>
       </div>
     </Wrapper>
@@ -36,6 +37,7 @@ const HeroSection = ({ myData }) => {
 
 const Wrapper = styled.section`
   padding: 12rem 0;
+  background-color: #ecf7ef;
 
   img {
     min-width: 10rem;
@@ -70,7 +72,7 @@ const Wrapper = styled.section`
 
     &::after {
       content: "";
-      width: 80%;
+      width: 60%;
       height: 80%;
       background-color: #EDBB99;
       position: absolute;
@@ -81,7 +83,7 @@ const Wrapper = styled.section`
     }
   }
   .img-style {
-    width: 100%;
+    width: 80%;
     height: auto;
     border-radius: 20px;
   }
@@ -103,4 +105,4 @@ const Wrapper = styled.section`
   }
 `;
 
-export default HeroSection
+export default HomeSeller
