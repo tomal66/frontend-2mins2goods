@@ -113,7 +113,6 @@ const Wrapper = styled.section`
 
   .footer-bottom--section {
     padding-top: 0rem;
-
     hr {
       margin-bottom: 2rem;
       color: ${({ theme }) => theme.colors.hr};
