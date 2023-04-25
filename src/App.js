@@ -18,7 +18,7 @@ function App() {
       text: "rgba(29 ,29, 29, .8)",
       white: "#fff",
       black: " #212529",
-      helper: "#8490ff",
+      helper: "#E6400B",
 
       bg: "#F6F8FA",
       footer_bg: "#0a1435",
