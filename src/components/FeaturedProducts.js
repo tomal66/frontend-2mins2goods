@@ -1,12 +1,13 @@
 import { useProductContext } from "../context/productcontext";
-import styled from "styled-components";
+import styled, {keyframes} from "styled-components";
 import ProductCard from "./ProductCard";
+import Loading from "../styles/Loading"
 
 const FeaturedProducts = () => {
     const { isLoading, featureProducts } = useProductContext();
 
     if (isLoading) {
-      return <div> ......Loading </div>;
+      return <Loading/>;
     }
   
     return (
@@ -47,7 +48,7 @@ const Wrapper = styled.section`
       left: 0;
       width: 0%;
       height: 100%;
-      background-color: rgba(0, 0, 0, 0.5);
+      background-color: rgba(0, 0, 0, 0);
       transition: all 0.2s linear;
       cursor: pointer;
     }
@@ -95,6 +96,7 @@ const Wrapper = styled.section`
     h3 {
       color: ${({ theme }) => theme.colors.text};
       text-transform: capitalize;
+      
     }
 
     .card-data--price {
