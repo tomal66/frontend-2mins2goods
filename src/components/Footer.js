@@ -1,10 +1,64 @@
+import React from "react";
 import styled from "styled-components";
+import { NavLink } from "react-router-dom";
+import { Button } from "../styles/Button";
+import { FaDiscord, FaFacebook, FaInstagram, FaLinkedin, FaYoutube } from "react-icons/fa";
 
 const Footer = () => {
   return (
-    <Wrapper>
-        
-    </Wrapper>
+    <>
+      <Wrapper>
+        {/* footer section */}
+
+        <footer>
+          <div className="footer-bottom--section">
+            <div className="container grid grid-four-column ">
+              <div>
+              <p>
+                ©{new Date().getFullYear()} 2mins2goods
+              </p>
+              <p>
+                All Rights Reserved
+              </p>
+              </div>
+              
+              <div className="footer-social">
+              <h3>Follow Us</h3>
+              <div className="footer-social--icons">
+                <div>
+                  <FaLinkedin className="icons" />
+                </div>
+                <div>
+                  <FaInstagram className="icons" />
+                </div>
+                <div>
+                    <FaFacebook className="icons" />
+                </div>
+              </div>
+              </div>
+              <div className="footer-contact">
+              <h3>24/7 Support</h3>
+              <h3>+88 01234567890</h3>
+              </div>
+              <div>
+                <NavLink to="/policy">
+                  <p>Privacy Policy</p>
+                </NavLink>
+                
+                <NavLink to="/about">
+                  <p>About Us</p>
+                </NavLink>
+
+                <NavLink to="/about">
+                  <p>Terms and Conditions</p>
+                </NavLink>
+
+              </div>
+            </div>
+          </div>
+        </footer>
+      </Wrapper>
+    </>
   )
 }
 
@@ -29,7 +83,7 @@ const Wrapper = styled.section`
   }
 
   footer {
-    padding: 14rem 0 9rem 0;
+    padding: 4rem 0 9rem 0;
     background-color: ${({ theme }) => theme.colors.footer_bg};
     h3 {
       color: ${({ theme }) => theme.colors.hr};
@@ -58,7 +112,7 @@ const Wrapper = styled.section`
   }
 
   .footer-bottom--section {
-    padding-top: 9rem;
+    padding-top: 0rem;
 
     hr {
       margin-bottom: 2rem;
