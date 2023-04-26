@@ -1,13 +1,20 @@
-import React from "react";
+import React, { useState } from "react";
 import { useFilterContext } from "../context/filter_context";
 import GridView from "./GridView";
 import ListView from "./ListView";
 import NoProduct from "./NoProduct"
+import { Pagination } from "@mui/material";
 
 const ProductList = () => {
   const { filter_products, grid_view } = useFilterContext();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [productsPerPage, setProductsPerPage] = useState(6);
+  const lastProductIndex = currentPage*productsPerPage;
+  const firstProductIndex = lastProductIndex-productsPerPage;
+  const currentProducts = filter_products.slice(firstProductIndex, lastProductIndex);
 
-  if(filter_products.length===0)
+
+  if(currentProducts.length===0)
   {
     const data = {
       prompt: "No products found",
@@ -16,11 +23,31 @@ const ProductList = () => {
   }
 
   if (grid_view === true) {
-    return <GridView products={filter_products} />;
+    return (
+      <>
+        <GridView products={currentProducts} />
+        <Pagination 
+          count={Math.ceil(filter_products.length/productsPerPage)} 
+          page={currentPage}
+          onChange={(event, value) => setCurrentPage(value)}
+        />
+      </>
+    
+    );
   }
 
   if (grid_view === false) {
-    return <ListView products={filter_products} />;
+    return (
+      <>
+        <ListView products={currentProducts} />
+        <Pagination 
+          count={Math.ceil(filter_products.length/productsPerPage)} 
+          page={currentPage}
+          onChange={(event, value) => setCurrentPage(value)}
+        />
+      </>
+    
+    );
   }
 };
 
