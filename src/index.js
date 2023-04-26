@@ -4,6 +4,7 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { AppProvider } from './context/productcontext';
+import { FilterContextProvider } from './context/filter_context';
 
 
 
@@ -11,7 +12,9 @@ import { AppProvider } from './context/productcontext';
 ReactDOM.render(
   <React.StrictMode>
     <AppProvider>
-      <App />
+      <FilterContextProvider>
+        <App />
+      </FilterContextProvider>
     </AppProvider>
   </React.StrictMode>,
   document.getElementById('root')
