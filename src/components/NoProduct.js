@@ -2,7 +2,8 @@ import { NavLink } from "react-router-dom";
 import styled from "styled-components";
 import { Button } from "../styles/Button";
 
-const HeroSection = () => {
+const NoProduct = ({ myData }) => {
+  const { prompt } = myData;
   return (
     <Wrapper>
       <div className="container">
@@ -11,7 +12,7 @@ const HeroSection = () => {
             <p className="intro-data"> </p>
             <h1> Oops </h1>
             <p>
-              No product found!
+              {prompt}
             </p>
           </div>
           {/* our homepage image  */}
@@ -89,4 +90,4 @@ const Wrapper = styled.section`
   }
 `;
 
-export default HeroSection
+export default NoProduct

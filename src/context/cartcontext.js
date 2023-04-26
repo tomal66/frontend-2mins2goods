@@ -4,7 +4,7 @@ import reducer from "../reducer/cartReducer";
 const CartContext = createContext();
 
 const getLocalCartData = () => {
-  let localCartData = localStorage.getItem("thapaCart");
+  let localCartData = localStorage.getItem("2m2gcart");
   if (localCartData === []) {
     return [];
   } else {
@@ -13,7 +13,7 @@ const getLocalCartData = () => {
 };
 
 const initialState = {
-  // cart: [],
+  //cart: [],
   cart: getLocalCartData(),
   total_item: "",
   total_price: "",
@@ -55,7 +55,7 @@ const CartProvider = ({ children }) => {
     // dispatch({ type: "CART_TOTAL_PRICE" });
     dispatch({ type: "CART_ITEM_PRICE_TOTAL" });
 
-    localStorage.setItem("thapaCart", JSON.stringify(state.cart));
+    localStorage.setItem("2m2gcart", JSON.stringify(state.cart));
   }, [state.cart]);
 
   return (
@@ -77,4 +77,4 @@ const useCartContext = () => {
   return useContext(CartContext);
 };
 
-export { CartProvider, CartContext, useCartContext };
+export { CartProvider, useCartContext };

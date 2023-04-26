@@ -9,7 +9,10 @@ const ProductList = () => {
 
   if(filter_products.length===0)
   {
-    return <NoProduct/>;
+    const data = {
+      prompt: "No products found",
+    }
+    return <NoProduct myData={data}/>;
   }
 
   if (grid_view === true) {
