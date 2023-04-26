@@ -3,6 +3,7 @@ import { useFilterContext } from "../context/filter_context";
 import { FaCheck } from "react-icons/fa";
 import FormatPrice from "../helpers/FormatPrice";
 import { Button } from "../styles/Button";
+import TextField from '@mui/material/TextField';
 
 const FilterSection = () => {
   const {
@@ -37,6 +38,7 @@ const FilterSection = () => {
 
   return (
     <Wrapper>
+      
       <div className="filter-search">
         <form onSubmit={(e) => e.preventDefault()}>
           <input
