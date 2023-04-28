@@ -9,7 +9,7 @@ const FeaturedProducts = () => {
     if (isLoading) {
       return <Loading/>;
     }
-  
+   
     return (
       <Wrapper className="section">
         <div className="container">

@@ -5,7 +5,7 @@ import ListView from "./ListView";
 import NoProduct from "./NoProduct"
 import { Pagination } from "@mui/material";
 
-const ProductList = () => {
+const ProductList = () => { 
   const { filter_products, grid_view } = useFilterContext();
   const [currentPage, setCurrentPage] = useState(1);
   const [productsPerPage, setProductsPerPage] = useState(6);

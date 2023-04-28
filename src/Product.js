@@ -3,8 +3,14 @@ import FilterSection from "./components/FilterSection";
 import ProductList from "./components/ProductList";
 import Sort from "./components/Sort";
 import { useFilterContext } from "./context/filter_context";
+import { useEffect } from "react";
  
 const Product = () => {
+
+  useEffect(() => {
+    document.title = "Products - 2mins2goods"
+  }, [])
+
   return (
     <Wrapper>
       <div className="container grid grid-filter-column">

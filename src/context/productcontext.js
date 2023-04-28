@@ -11,8 +11,8 @@ const inialState = {
     isError: false,
     products:[],
     featureProducts:[],
-    isSingleLoading: false,
-    singleProduct: {},
+    isSingleLoading: false, 
+    singleProduct: {}, 
 }
 
 const AppProvider = ({ children }) => {
