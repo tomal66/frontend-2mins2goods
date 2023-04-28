@@ -10,8 +10,11 @@ import { ThemeProvider } from 'styled-components';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import Login from './Login';
+import Register from './Register';
 
 function App() {
+
+  
 
   const theme = {
     colors: {
@@ -50,6 +53,7 @@ function App() {
           <Route path="/singleproduct/:id" element={<SingleProduct/>}/>
           <Route path="/cart" element={<Cart/>}/>
           <Route path="/login" element={<Login/>}/>
+          <Route path="/register" element={<Register/>}/>
           <Route path="*" element={<ErrorPage/>}/>
         </Routes>
         <Footer/>

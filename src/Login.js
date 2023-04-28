@@ -1,24 +1,56 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useAuthContext } from './context/auth_context';
+import { NavLink, useNavigate } from 'react-router-dom';
 
 
 const Login = () => {
-  const { login } = useAuthContext();
+  const { login, isAuthenticated, error } = useAuthContext();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [message, setMessage] = useState('');
+  const nav = useNavigate();
+
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    login(username, password);
-    // Perform login action here
-    console.log('Username:', username, 'Password:', password);
+    login(username, password)
+    // .then(() => {
+    //   console.log('Logged in successfully');
+    // })
+    // .catch((error) => {
+    //   setMessage('Invalid credentials. Please try again.');
+    //   console.log('Error:', error);
+    // });
   };
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      nav("/");
+    }
+  }, [isAuthenticated, nav]);
+
+  useEffect(() => {
+    if(error){
+      setMessage("Invalid Credentials")
+    }
+  }, [error, setMessage])
+
+  useEffect(() => {
+    setMessage('');
+  }, []);
 
   return (
     <Wrapper>
       <Container>
         <Title>Sign In</Title>
+        {
+          message && (
+            <Alert>
+              {message}
+            </Alert>
+          )
+        }
         <Form onSubmit={handleSubmit}>
           <Input
             type="username"
@@ -42,7 +74,9 @@ const Login = () => {
         </Form>
         <Options>
           <Option href="#">Forgot Password?</Option>
-          <Option href="#">Register</Option>
+          <NavLink to="/register">
+            <Option >Register</Option>
+          </NavLink>
         </Options>
       </Container>
     </Wrapper>
@@ -55,6 +89,18 @@ const Wrapper = styled.div`
   align-items: flex-start;
   min-height: 100vh;
   background-color: ${({ theme }) => theme.colors.bg};
+`;
+
+const Alert = styled.div`
+  width: 100%;
+  padding: 1rem;
+  background-color: #f8d7da;
+  color: #721c24;
+  text-align: center;
+  border: 1px solid #f5c6cb;
+  border-radius: 3px;
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
 `;
 
 const Container = styled.div`
@@ -107,12 +153,25 @@ const Button = styled.button`
   border: none;
   border-radius: 3px;
   cursor: pointer;
+  transition: all 0.3s ease;
+  -webkit-transition: all 0.3s ease 0s;
+  -moz-transition: all 0.3s ease 0s;
+  -o-transition: all 0.3s ease 0s;
+
+  &:hover,
+  &:active {
+    box-shadow: 0 2rem 2rem 0 rgb(132 144 255 / 30%);
+    box-shadow: ${({ theme }) => theme.colors.shadowSupport};
+    transform: scale(0.96);
+  }
+
 `;
 
 const Options = styled.div`
 margin-top: 3rem;
   display: flex;
   justify-content: space-between;
+  
 `;
 
 const Option = styled.a`

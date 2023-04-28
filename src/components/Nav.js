@@ -1,17 +1,102 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import styled from "styled-components";
 import { FiShoppingCart } from "react-icons/fi";
 import { CgMenu, CgClose } from "react-icons/cg";
 import { useCartContext } from "../context/cartcontext";
 import { Button } from "../styles/Button";
+import { useAuthContext } from "../context/auth_context";
+import DropDownProfile from "./DropDownProfile";
+import { FaUserAlt } from "react-icons/fa";
 
 
 const Nav = () => {
 
     const [menuIcon, setMenuIcon] = useState();
     const { total_item } = useCartContext();
+    const {isAuthenticated, logout} = useAuthContext(); 
+    const [showDropDown, setShowDropDown] = useState(false);
+
+    const handleDropdownToggle = () => {
+      setShowDropDown(!showDropDown);
+    };
   
+
+      const ProfileIcon = styled(FaUserAlt)`
+        cursor: pointer;
+        font-size: 1.8rem;
+        color: ${({ theme }) => theme.colors.black};
+        transition: color 0.3s linear;
+
+        &:hover,
+        &:active {
+          color: ${({ theme }) => theme.colors.helper};
+      }`;
+
+      const DropDownItem = styled.a`
+        display: block;
+        border-radius: 1rem;
+        padding: 8px 16px;
+        text-decoration: none;
+        font-size: 1.4rem;
+        color: ${({ theme }) => theme.colors.black};
+        transition: background-color 0.3s linear, color 0.3s linear;
+        cursor: pointer;
+
+        &:hover,
+        &:active {
+          background-color: ${({ theme }) => theme.colors.helper};
+          color: #ffffff;
+        }
+    `;
+    const DropDownContainer = styled.div`
+      position: relative;
+      display: inline-block;
+    `;
+
+    const DropDownMenu = styled.div`
+      display: ${({ show }) => (show ? "block" : "none")};
+      position: absolute;
+      min-width: 110px;
+      background-color: ${({ theme }) => theme.colors.white};
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+      padding: 0.2rem;
+      border-radius: 1rem;
+      top: 150%; // Adjusted the position
+      left: 50%; // Adjusted the position
+      transform: translateX(-50%); // Adjusted the position
+      z-index: 1000;
+
+      // Added ::before and ::after pseudo-elements
+      ::before,
+      ::after {
+        content: '';
+        position: absolute;
+        top: -6px;
+        left: 50%;
+        transform: translateX(-50%);
+        border-left: 6px solid transparent;
+        border-right: 6px solid transparent;
+      }
+
+      ::before {
+        border-bottom: 6px solid ${({ theme }) => theme.colors.white};
+        z-index: 2;
+      }
+
+      ::after {
+        border-bottom: 6px solid rgba(0, 0, 0, 0.2);
+        top: -7px;
+        z-index: 1;
+      }
+
+      &:hover {
+        display: block;
+      }
+    `;
+
+
+
     const Nav = styled.nav`
       .navbar-lists {
         display: flex;
@@ -188,13 +273,56 @@ const Nav = () => {
               Products
             </NavLink>
           </li>
-          <li>
-            <NavLink to="/login">
-              <Button className="user-login">
-                Login
-              </Button>
-            </NavLink>
-          </li>
+          {isAuthenticated ? (
+            <li>
+              <DropDownContainer>
+                <ProfileIcon
+                  onClick={handleDropdownToggle}
+                  //onMouseLeave={() => setShowDropDown(false)}
+                />
+                <DropDownMenu show={showDropDown}>
+                  <NavLink to="editProfile">
+                    <DropDownItem
+                      onMouseEnter={() => setShowDropDown(true)}
+                      onMouseLeave={() => setShowDropDown(false)}
+                      onClick={handleDropdownToggle}
+                    >
+                      Edit Profile
+                    </DropDownItem>
+                  </NavLink>
+                  
+                  <NavLink to="myOrders">
+                    <DropDownItem
+                      onMouseEnter={() => setShowDropDown(true)}
+                      onMouseLeave={() => setShowDropDown(false)}
+                      onClick={handleDropdownToggle}
+                    >
+                      My Orders
+                    </DropDownItem>
+                  </NavLink>
+                    <DropDownItem
+                      onClick={() => {
+                        logout();
+                        handleDropdownToggle();
+                      }}
+                      onMouseEnter={() => setShowDropDown(true)}
+                      onMouseLeave={() => setShowDropDown(false)}
+                  >
+                    Logout
+                  </DropDownItem>
+                </DropDownMenu>
+              </DropDownContainer>
+              {/* <Button className="user-logout" onClick={logout}>
+                Logout
+              </Button> */}
+            </li>
+          ) : (
+            <li>
+              <NavLink to="/login">
+                <Button className="user-login">Login</Button>
+              </NavLink>
+            </li>
+          )}
           <li>
             <NavLink to="/cart" className="navbar-link cart-trolley--link">
               <FiShoppingCart className="cart-trolley" />
