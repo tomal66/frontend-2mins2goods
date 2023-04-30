@@ -20,6 +20,7 @@ const Register = () => {
   const [mobile, setMobile] = useState('');
   const [email, setEmail] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [role, setRole] = useState('ROLE_USER');
   const [message, setMessage] = useState('');
 
   const doPasswordsMatch = () => {
@@ -29,10 +30,10 @@ const Register = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (doPasswordsMatch()) {
-      register(username, firstname, lastname, password, mobile, email);
+      register(username, firstname, lastname, password, mobile, email, role);
       console.log('Username:', username, 'Firstname:', firstname, 'Lastname:', lastname, 'Password:', password, 'Mobile:', mobile, 'Email:', email);
     } else {
-      // You can show an alert or display an error message if the passwords don't match
+      // Error alert message if the passwords don't match
       setMessage("Passwords do not match!")
     }
   };

@@ -9,6 +9,9 @@ const Home = () => {
   useEffect(() => {
     document.title = "2mins2goods"
   }, [])
+
+  
+
   const data = {
     name : "2mins2goods",
   }

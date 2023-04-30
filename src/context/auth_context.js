@@ -1,5 +1,5 @@
 import axios from "axios";
-import { createContext, useContext, useReducer, useState } from "react";
+import { createContext, useContext, useReducer, useEffect } from "react";
 import authReducer from "../reducer/authReducer";
 
 const AuthContext = createContext();
@@ -8,14 +8,30 @@ const API = "http://localhost:8080/api/auth/";
 
 const inialState = {
   isAuthenticated: false,
-  user: null,
+  username: null,
   error: null,
+  role: null,
+  stateRestored: false,
 };
 
 const AuthProvider = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, inialState);
 
-  const register = async (username, firstname, lastname, password, mobile, email) => {
+  useEffect(() => {
+    const storedState = JSON.parse(localStorage.getItem("authState"));
+    if (storedState) {
+      dispatch({ type: "RESTORE_STATE", payload: storedState });
+    } else {
+      dispatch({ type: "STATE_RESTORED" });
+    }
+    
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("authState", JSON.stringify(state));
+  }, [state]);
+
+  const register = async (username, firstname, lastname, password, mobile, email, role) => {
     try {
       const response = await axios.post(API + "register", {
         username,
@@ -24,6 +40,7 @@ const AuthProvider = ({ children }) => {
         password,
         mobile,
         email,
+        role,
       });
   
       if (response.data) {
@@ -49,8 +66,9 @@ const AuthProvider = ({ children }) => {
         dispatch({
           type: "LOGIN",
           payload: {
-            user: response.data.user,
+            username: response.data.username,
             accessToken: response.data.accessToken,
+            role: response.data.role
           },
         });
       }

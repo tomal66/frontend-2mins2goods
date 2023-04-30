@@ -11,6 +11,13 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import Login from './Login';
 import Register from './Register';
+import Layout from './components/Layout';
+import SellerLogin from './SellerLogin';
+import Unauthorized from './Unauthorized';
+import RequireAuth from './helpers/RequireAuth';
+import SellerDashboard from './SellerDashboard';
+import AdminDashboard from './AdminDashboard';
+
 
 function App() {
 
@@ -48,13 +55,30 @@ function App() {
         <GlobalStyle/>
         <Header/>
         <Routes>
+        <Route path="/" element={<Layout />}>
+
+          {/* Public Routes */}
           <Route path="/" element={<Home/>}/>
-          <Route path="/products" element={<Product/>}/>
+          
           <Route path="/singleproduct/:id" element={<SingleProduct/>}/>
           <Route path="/cart" element={<Cart/>}/>
           <Route path="/login" element={<Login/>}/>
           <Route path="/register" element={<Register/>}/>
+          <Route path="/seller-login" element={<SellerLogin/>}/>
+          <Route path="/unauthorized" element={<Unauthorized/>}/>
           <Route path="*" element={<ErrorPage/>}/>
+
+          <Route element={<RequireAuth allowedRole={"ROLE_SELLER"} />}>
+            <Route path="/seller-dashboard" element={<SellerDashboard />} />
+          </Route>
+
+          <Route element={<RequireAuth allowedRole={"ROLE_ADMIN"} />}>
+            <Route path="/admin-dashboard" element={<AdminDashboard />} />
+            <Route path="/products" element={<Product/>}/>
+          </Route>
+
+        </Route>
+          
         </Routes>
         <Footer/>
       </Router>

@@ -24,8 +24,8 @@ const HomeSeller = () => {
             <p>
               Find customers in your area
             </p>
-            <NavLink to="/products">
-              <Button>Register</Button>
+            <NavLink to="/seller-login">
+              <Button>Get Started</Button>
             </NavLink>
           </div>
 

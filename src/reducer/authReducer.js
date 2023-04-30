@@ -5,16 +5,35 @@ const authReducer = (state, action) => {
         return {
           ...state,
           isAuthenticated: true,
-          user: action.payload.user,
+          username: action.payload.username,
+          role: action.payload.role,
           error: null,
         };
+
+        // isAuthenticated: false,
+        // user: null,
+        // error: null,
+        // role: null,
+        // stateRestored: false,
+
       case "LOGOUT":
         localStorage.removeItem("accessToken");
         return {
           ...state,
           isAuthenticated: false,
-          user: null,
+          role: null,
+          username: null,
         };
+      
+      case "RESTORE_STATE":
+        return action.payload;
+
+      case "STATE_RESTORED":
+      return {
+        ...state,
+        stateRestored: true,
+      };
+
       case "AUTH_ERROR":
         localStorage.setItem("accessToken", null);
         return {
