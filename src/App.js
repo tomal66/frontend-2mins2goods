@@ -17,6 +17,8 @@ import Unauthorized from './Unauthorized';
 import RequireAuth from './helpers/RequireAuth';
 import SellerDashboard from './SellerDashboard';
 import AdminDashboard from './AdminDashboard';
+import MyProducts from './MyProducts';
+import Orders from './Orders'
 
 
 function App() {
@@ -62,6 +64,7 @@ function App() {
           
           <Route path="/singleproduct/:id" element={<SingleProduct/>}/>
           <Route path="/cart" element={<Cart/>}/>
+          <Route path="/products" element={<Product/>}/>
           <Route path="/login" element={<Login/>}/>
           <Route path="/register" element={<Register/>}/>
           <Route path="/seller-login" element={<SellerLogin/>}/>
@@ -70,11 +73,12 @@ function App() {
 
           <Route element={<RequireAuth allowedRole={"ROLE_SELLER"} />}>
             <Route path="/seller-dashboard" element={<SellerDashboard />} />
+            <Route path="/my-products" element={<MyProducts />} />
+            <Route path="/orders" element={<Orders />} />
           </Route>
 
           <Route element={<RequireAuth allowedRole={"ROLE_ADMIN"} />}>
             <Route path="/admin-dashboard" element={<AdminDashboard />} />
-            <Route path="/products" element={<Product/>}/>
           </Route>
 
         </Route>

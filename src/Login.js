@@ -5,7 +5,7 @@ import { NavLink, useNavigate } from 'react-router-dom';
 
 
 const Login = () => {
-  const { login, isAuthenticated, error } = useAuthContext();
+  const { login, isAuthenticated, error, role } = useAuthContext();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
@@ -26,7 +26,17 @@ const Login = () => {
 
   useEffect(() => {
     if (isAuthenticated) {
-      nav("/");
+      if(role==="ROLE_SELLER")
+      {
+        nav("/seller-dashboard");
+      }
+      else if(role==="ROLE_ADMIN"){
+        nav("/admin-dashboard");
+      }
+      else{
+        nav("/");
+      }
+
     }
   }, [isAuthenticated, nav]);
 
