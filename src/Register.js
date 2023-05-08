@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useAuthContext } from './context/auth_context';
 import { NavLink, useNavigate } from 'react-router-dom';
+import useGeoLocation from './helpers/useGeoLocation';
 
 const Register = () => {
   const { register, isAuthenticated, error } = useAuthContext();
@@ -12,7 +13,7 @@ const Register = () => {
     }
   }, [isAuthenticated, nav]);
 
-
+  const [currentStep, setCurrentStep] = useState(1);
   const [username, setUsername] = useState('');
   const [firstname, setFirstname] = useState('');
   const [lastname, setLastname] = useState('');
@@ -21,20 +22,50 @@ const Register = () => {
   const [email, setEmail] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [role, setRole] = useState('ROLE_USER');
+  const [address, setAddress] = useState('');
+  const [zipcode, setZipcode] = useState('');
+  const [city, setCity] = useState('');
+  const [state, setState] = useState('');
+  const [country, setCountry] = useState('');
+  const [latitude, setLatitude] = useState('');
+  const [longitude, setLongitude] = useState('');
+  const location = useGeoLocation();
+
   const [message, setMessage] = useState('');
 
   const doPasswordsMatch = () => {
     return password === confirmPassword;
   };
 
+  const isLocationLoaded = () => {
+    return location.loaded;
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (doPasswordsMatch()) {
-      register(username, firstname, lastname, password, mobile, email, role);
-      console.log('Username:', username, 'Firstname:', firstname, 'Lastname:', lastname, 'Password:', password, 'Mobile:', mobile, 'Email:', email);
+
+      if(isLocationLoaded){
+        register(username, firstname, lastname, password, mobile, email, role, address, zipcode, city, state, country, latitude, longitude);
+        console.log('Username:', username, 'Firstname:', firstname, 'Lastname:', lastname, 'Password:', password, 'Mobile:', mobile, 'Email:', email);
+      }
+      else{
+        setMessage("Can't retrieve your location!");
+      }
+      
     } else {
       // Error alert message if the passwords don't match
       setMessage("Passwords do not match!")
+    }
+  };
+
+  const handleNext = () => {
+    if (username && email && password && doPasswordsMatch()) {
+      setCurrentStep(2);
+      setMessage("");
+    } else {
+      // Error alert message if any of the required fields are missing or invalid
+      setMessage("Please fill in all required fields and make sure the passwords match!")
     }
   };
   
@@ -48,6 +79,14 @@ const Register = () => {
     setMessage('');
   }, []);
 
+  useEffect(() => {
+    setMessage('');
+    if (location.loaded && !location.error) {
+      setLatitude(location.coordinates.lat);
+      setLongitude(location.coordinates.long);
+    }
+  }, [location, setLatitude, setLongitude]);
+
   return (
     <Wrapper>
       <Container>
@@ -59,81 +98,131 @@ const Register = () => {
             </Alert>
           )
         }
-        <Form onSubmit={handleSubmit}>
-          <Input
-            type="text"
-            id="username"
-            name="username"
-            placeholder="Username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            required
-          />
-          <Input
-            type="text"
-            id="firstname"
-            name="firstname"
-            placeholder="First Name"
-            value={firstname}
-            onChange={(e) => setFirstname(e.target.value)}
-            required
-          />
-          <Input
-            type="text"
-            id="lastname"
-            name="lastname"
-            placeholder="Last Name"
-            value={lastname}
-            onChange={(e) => setLastname(e.target.value)}
-            required
-          />
-          <Input
-            type="password"
-            id="password"
-            name="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
 
-          <Input
-            type="password"
-            id="confirmPassword"
-            name="confirmPassword"
-            placeholder="Confirm Password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            required
-          />
+        {currentStep === 1 && (
+          <Form onSubmit={(e) => {
+            e.preventDefault();
+            handleNext();
+          }}>
+            <Input
+              type="text"
+              id="username"
+              name="username"
+              placeholder="Username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
+            <Input
+              type="email"
+              id="email"
+              name="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+            <Input
+              type="password"
+              id="password"
+              name="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+            <Input
+              type="password"
+              id="confirmPassword"
+              name="confirmPassword"
+              placeholder="Confirm Password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+            />
+            <Button type="submit">Next</Button>
+          </Form>
+        )}
 
-          <Input
-            type="tel"
-            id="mobile"
-            name="mobile"
-            placeholder="Mobile"
-            value={mobile}
-            onChange={(e) => setMobile(e.target.value)}
-            required
-          />
-          <Input
-            type="email"
-            id="email"
-            name="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-          <Button type="submit">Register</Button>
-        </Form>
-        <Options>
-          <NavLink to="/login">
-            <Option>Already have an account? Sign In</Option>
-          </NavLink>
-        </Options>
-      </Container>
-    </Wrapper>
+        {currentStep === 2 && (
+          <Form onSubmit={handleSubmit}>
+            <Input
+              type="text"
+              id="address"
+              name="address"
+          placeholder="Address"
+          value={address}
+          onChange={(e) => setAddress(e.target.value)}
+          required
+        />
+        <Input
+          type="text"
+          id="zipcode"
+          name="zipcode"
+          placeholder="Zipcode"
+          value={zipcode}
+          onChange={(e) => setZipcode(e.target.value)}
+          required
+        />
+        <Input
+          type="text"
+          id="city"
+          name="city"
+          placeholder="City"
+          value={city}
+          onChange={(e) => setCity(e.target.value)}
+          required
+        />
+        <Input
+          type="text"
+          id="state"
+          name="state"
+          placeholder="State"
+          value={state}
+          onChange={(e) => setState(e.target.value)}
+          required
+        />
+        <Input
+          type="text"
+          id="country"
+          name="country"
+          placeholder="Country"
+          value={country}
+          onChange={(e) => setCountry(e.target.value)}
+          required
+        />
+        <Input
+          type="text"
+          id="latitude"
+          name="latitude"
+          placeholder="Latitude"
+          value={latitude}
+          onChange={(e) => setLatitude(e.target.value)}
+          required
+        />
+        <Input
+          type="text"
+          id="longitude"
+          name="longitude"
+          placeholder="Longitude"
+          value={longitude}
+          onChange={(e) => setLongitude(e.target.value)}
+          required
+        />
+        <Button type="submit">Register</Button>
+      </Form>
+    )}
+
+    <Options>
+      {currentStep === 1 && (
+        <Option onClick={() => nav("/login")}>Already have an account? Sign In</Option>
+      )}
+      {currentStep === 2 && (
+        <Option onClick={() => setCurrentStep(1)}>Back</Option>
+      )}
+    </Options>
+  </Container>
+</Wrapper>
   );
 };
 

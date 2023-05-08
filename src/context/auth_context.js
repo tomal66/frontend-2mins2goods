@@ -31,7 +31,7 @@ const AuthProvider = ({ children }) => {
     localStorage.setItem("authState", JSON.stringify(state));
   }, [state]);
 
-  const register = async (username, firstname, lastname, password, mobile, email, role) => {
+  const register = async (username, firstname, lastname, password, mobile, email, role, address, zipcode, city, state, country, latitude, longitude) => {
     try {
       const response = await axios.post(API + "register", {
         username,
@@ -41,6 +41,15 @@ const AuthProvider = ({ children }) => {
         mobile,
         email,
         role,
+        address: {
+          address: address,
+          country: country,
+          zipcode: zipcode,
+          city: city,
+          longitude: longitude,
+          latitude: latitude,
+          state: state
+        }
       });
   
       if (response.data) {
