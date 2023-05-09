@@ -19,6 +19,7 @@ import AdminDashboard from './AdminDashboard';
 import MyProducts from './MyProducts';
 import Orders from './Orders'
 import SellerRegister from './SellerRegister';
+import AddProduct from './AddProduct';
 
 
 function App() {
@@ -74,6 +75,7 @@ function App() {
           <Route element={<RequireAuth allowedRole={"ROLE_SELLER"} />}>
             <Route path="/seller-dashboard" element={<SellerDashboard />} />
             <Route path="/my-products" element={<MyProducts />} />
+            <Route path="/add-products" element={<AddProduct />} />
             <Route path="/orders" element={<Orders />} />
           </Route>
 

@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import {AiTwotoneShopping} from "react-icons/ai"
 import {CgShoppingCart} from "react-icons/cg"
-import {BsFillPersonFill} from "react-icons/bs"
+import {BsFillPersonFill, BsFillCartPlusFill} from "react-icons/bs"
 import { NavLink } from "react-router-dom";
 
 const SellerDashboardItems = () => {
@@ -9,13 +9,24 @@ const SellerDashboardItems = () => {
     <Wrapper>
         <div className="container">
         <h2>Dashboard</h2>
-            <div className="grid grid-three-column">
+            <div className="grid grid-four-column">
+            <div className="services-2">
+                <div className="services-colum-2">
+                    <NavLink to="/add-products">
+                    <div>
+                    <BsFillCartPlusFill className="icon" />
+                    <h3>Add Products</h3>
+                    </div>
+                    </NavLink>
+                </div>
+                </div>
+
                 <div className="services-2">
                 <div className="services-colum-2">
                     <NavLink to="/my-products">
                     <div>
                     <AiTwotoneShopping className="icon" />
-                    <h3>Products</h3>
+                    <h3>All Products</h3>
                     </div>
                     </NavLink>
                 </div>

@@ -169,6 +169,15 @@ const SellerRegister = () => {
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
             />
+            <Input
+              type="tel"
+              id="mobile"
+              name="mobile"
+              placeholder="Mobile Number"
+              value={mobile}
+              onChange={(e) => setMobile(e.target.value)}
+              required
+            />
             <Button type="submit">Next</Button>
           </Form>
         )}
