@@ -6,7 +6,7 @@ import { Button } from "../styles/Button";
 const ListView = ({ products }) => {
   return (
     <Wrapper className="section">
-      <div className="container grid">
+      <div className="container grid"> 
         {products.map((curElem) => {
           const { id, name, image, price, description } = curElem;
           return (

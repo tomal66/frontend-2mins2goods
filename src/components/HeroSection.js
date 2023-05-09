@@ -6,7 +6,7 @@ const HeroSection = ({ myData }) => {
     const { name } = myData;
   return (
     <Wrapper>
-      <div className="container">
+      <div className="container"> 
         <div className="grid grid-two-column">
           <div className="hero-section-data">
             <p className="intro-data">Welcome to </p>

@@ -12,7 +12,7 @@ const ProductList = () => {
   const lastProductIndex = currentPage*productsPerPage;
   const firstProductIndex = lastProductIndex-productsPerPage;
   const currentProducts = filter_products.slice(firstProductIndex, lastProductIndex);
-
+ 
 
   if(currentProducts.length===0)
   {

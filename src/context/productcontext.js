@@ -16,7 +16,7 @@ const inialState = {
 }
 
 const AppProvider = ({ children }) => {
-
+ 
     const [state, dispatch] = useReducer(reducer, inialState);
 
     const getProducts = async(url) => {
