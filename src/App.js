@@ -12,13 +12,13 @@ import Footer from './components/Footer';
 import Login from './Login';
 import Register from './Register';
 import Layout from './components/Layout';
-import SellerLogin from './SellerLogin';
 import Unauthorized from './Unauthorized';
 import RequireAuth from './helpers/RequireAuth';
 import SellerDashboard from './SellerDashboard';
 import AdminDashboard from './AdminDashboard';
 import MyProducts from './MyProducts';
 import Orders from './Orders'
+import SellerRegister from './SellerRegister';
 
 
 function App() {
@@ -67,7 +67,7 @@ function App() {
           <Route path="/products" element={<Product/>}/>
           <Route path="/login" element={<Login/>}/>
           <Route path="/register" element={<Register/>}/>
-          <Route path="/seller-login" element={<SellerLogin/>}/>
+          <Route path="/seller-register" element={<SellerRegister/>}/>
           <Route path="/unauthorized" element={<Unauthorized/>}/>
           <Route path="*" element={<ErrorPage/>}/>
 

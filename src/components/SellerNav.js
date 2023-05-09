@@ -1,12 +1,11 @@
 import React, { useState, useRef, useEffect } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { FiShoppingCart } from "react-icons/fi";
 import { CgMenu, CgClose } from "react-icons/cg";
 import { useCartContext } from "../context/cartcontext";
 import { Button } from "../styles/Button";
 import { useAuthContext } from "../context/auth_context";
-import DropDownProfile from "./DropDownProfile";
 import { FaUserAlt } from "react-icons/fa";
 
 
@@ -16,6 +15,7 @@ const SellerNav = () => {
     const { total_item } = useCartContext();
     const {isAuthenticated, logout} = useAuthContext(); 
     const [showDropDown, setShowDropDown] = useState(false);
+    const nav = useNavigate();
 
     const handleDropdownToggle = () => {
       setShowDropDown(!showDropDown);
@@ -72,6 +72,7 @@ const SellerNav = () => {
                     <DropDownItem
                       onClick={() => {
                         logout();
+                        nav("/");
                         handleDropdownToggle();
                       }}
                       onMouseEnter={() => setShowDropDown(true)}

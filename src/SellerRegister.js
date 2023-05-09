@@ -4,7 +4,7 @@ import { useAuthContext } from './context/auth_context';
 import { NavLink, useNavigate } from 'react-router-dom';
 import useGeoLocation from './helpers/useGeoLocation';
 
-const Register = () => {
+const SellerRegister = () => {
   const { register, isAuthenticated, error } = useAuthContext();
   const nav = useNavigate();
   useEffect(() => {
@@ -21,7 +21,7 @@ const Register = () => {
   const [mobile, setMobile] = useState('');
   const [email, setEmail] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [role, setRole] = useState('ROLE_USER');
+  const [role, setRole] = useState('ROLE_SELLER');
   const [address, setAddress] = useState('');
   const [zipcode, setZipcode] = useState('');
   const [city, setCity] = useState('');
@@ -87,10 +87,16 @@ const Register = () => {
     }
   }, [location, setLatitude, setLongitude]);
 
+  useEffect(() => {
+    if (isAuthenticated) {
+      nav("/seller-dashboard");
+    }
+  }, [isAuthenticated, nav]);
+
   return (
     <Wrapper>
       <Container>
-        <Title>Register</Title>
+        <Title>Register - Seller</Title>
         {
           message && (
             <Alert>
@@ -347,4 +353,4 @@ text-decoration: underline;
 }
 `;
 
-export default Register;
+export default SellerRegister;
