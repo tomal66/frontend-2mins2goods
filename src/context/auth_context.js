@@ -13,7 +13,7 @@ const inialState = {
   role: null,
   stateRestored: false,
 };
-
+ 
 const AuthProvider = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, inialState);
 
@@ -21,9 +21,9 @@ const AuthProvider = ({ children }) => {
     const storedState = JSON.parse(localStorage.getItem("authState"));
     if (storedState) {
       dispatch({ type: "RESTORE_STATE", payload: storedState });
-    } else {
-      dispatch({ type: "STATE_RESTORED" });
-    }
+    } 
+
+    dispatch({ type: "STATE_RESTORED" });
     
   }, []);
 

@@ -8,7 +8,7 @@ const RequireAuth = ({ allowedRole }) => {
     const location = useLocation();
     console.log(role);
     console.log(allowedRole);
-
+ 
     if(!stateRestored)
     {
       return <Loading/>;

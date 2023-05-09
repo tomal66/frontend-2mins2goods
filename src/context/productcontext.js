@@ -1,16 +1,19 @@
 import axios from "axios";
 import { createContext, useContext, useEffect, useReducer } from "react";
 import reducer from "../reducer/productreducer";
+import { useAuthContext } from "./auth_context";
 
 const AppContext = createContext();
 
 const API = "https://api.pujakaitem.com/api/products";
 const ADD_PRODUCT_API = "http://localhost:8080/api/product/add";
+const SELLER_PRODUCTS_API = "http://localhost:8080/api/product/seller"
 
 const inialState = {
     isLoading: false,
     isError: false,
     products:[],
+    sellerProducts: [],
     featureProducts:[],
     isSingleLoading: false, 
     singleProduct: {}, 
@@ -19,6 +22,7 @@ const inialState = {
 const AppProvider = ({ children }) => {
  
     const [state, dispatch] = useReducer(reducer, inialState);
+
 
 
     const getProducts = async(url) => {
@@ -66,6 +70,32 @@ const AppProvider = ({ children }) => {
         }
       };
       
+      const getSellerProducts = async (seller) => {
+        try {
+          const response = await axios.get(SELLER_PRODUCTS_API, {
+            params: { seller },
+          });
+      
+          dispatch({ type: "SET_SELLER_PRODUCTS", payload: response.data });
+        } catch (error) {
+          console.error("Error getting seller's products:", error);
+        }
+      };
+
+      const fetchImage = async (imageId) => {
+        try {
+          const response = await axios.get("http://localhost:8080/api/image/download", {
+            params: { imageId },
+            responseType: "blob",
+          });
+          const imageURL = URL.createObjectURL(response.data);
+          return imageURL;
+        } catch (error) {
+          console.error("Error fetching image:", error);
+        }
+      };
+      
+      
       
       
 
@@ -74,7 +104,7 @@ const AppProvider = ({ children }) => {
     },[])
 
     return (
-    <AppContext.Provider value={{...state, getSingleProduct, addProduct}}>
+    <AppContext.Provider value={{...state, getSingleProduct, addProduct, getSellerProducts, fetchImage}}>
         {children}
     </AppContext.Provider>
     )

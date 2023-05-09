@@ -1,30 +1,35 @@
-import React, {useMemo} from 'react'
+import React, {useMemo, useEffect} from 'react'
 import { useProductContext } from '../context/productcontext';
 import DataTable from 'react-data-table-component'
 import styled from 'styled-components'
 import { FiEdit2, FiTrash2 } from 'react-icons/fi';
+import { useAuthContext } from '../context/auth_context';
+import ImageCell from './ImageCell';
 
 
 const MyProductsTable = () => {
-    const { products } = useProductContext();
-  
+    const { getSellerProducts, sellerProducts, fetchImage } = useProductContext();
+    const {username} = useAuthContext();
+    useEffect(()=>{
+      getSellerProducts(username);
+  },[])
+
+    const products = sellerProducts;
+
     const columns = useMemo(() => [
-        {
-            name: 'Image',
-            cell: row => (
-              <div className="image-wrapper">
-                <img src={row.image} alt={row.name} />
-              </div>
-            ),
-        },
+      {
+        name: "Image",
+        cell: (row) => <ImageCell imageId={row.images[0]} />, // Use a separate ImageCell component
+      },
+      
       {
         name: 'Product ID',
-        selector: 'id',
+        selector: 'productId',
         sortable: true,
       },
       {
-        name: 'Product Name',
-        selector: 'name',
+        name: 'Title',
+        selector: 'title',
         sortable: true,
       },
       {
@@ -39,7 +44,7 @@ const MyProductsTable = () => {
       },
       {
         name: 'Stock',
-        selector: 'stock',
+        selector: 'quantity',
         sortable: true,
       },
       {
