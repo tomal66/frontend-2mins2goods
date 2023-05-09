@@ -60,13 +60,18 @@ const SellerRegister = () => {
   };
 
   const handleNext = () => {
-    if (username && email && password && doPasswordsMatch()) {
+    if (username && email && password && password.length >= 8 && doPasswordsMatch()) {
       setCurrentStep(2);
       setMessage("");
     } else {
       // Error alert message if any of the required fields are missing or invalid
-      setMessage("Please fill in all required fields and make sure the passwords match!")
+      if (!username) setMessage("Please enter a username!");
+      else if (!email) setMessage("Please enter an email address!");
+      else if (!password) setMessage("Please enter a password!");
+      else if (password.length < 8) setMessage("Password must be at least 8 characters long!");
+      else if (!doPasswordsMatch()) setMessage("Passwords do not match!");
     }
+    
   };
   
   useEffect(() => {

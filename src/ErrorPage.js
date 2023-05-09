@@ -1,21 +1,22 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { Button } from "./styles/Button";
 
 const ErrorPage = () => {
+  const navigate = useNavigate();
+
+  const goBack = () => navigate(-1);
   return (
     <Wrapper>
       <div className="container">
         <div>
-          <h2>404</h2>
+          <h2>404</h2> 
           <h3>Page Not Found</h3>
           <p>
             Sorry, The page you have requested does not exist!
           </p>
 
-          <NavLink to="/">
-            <Button>Go Back to Home</Button>
-          </NavLink>
+          <Button onClick={goBack}>Go Back</Button>
         </div>
       </div>
     </Wrapper>
