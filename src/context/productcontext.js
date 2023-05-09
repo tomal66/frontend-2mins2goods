@@ -5,6 +5,7 @@ import reducer from "../reducer/productreducer";
 const AppContext = createContext();
 
 const API = "https://api.pujakaitem.com/api/products";
+const ADD_PRODUCT_API = "http://localhost:8080/api/product/add";
 
 const inialState = {
     isLoading: false,
@@ -18,6 +19,7 @@ const inialState = {
 const AppProvider = ({ children }) => {
  
     const [state, dispatch] = useReducer(reducer, inialState);
+
 
     const getProducts = async(url) => {
         dispatch({type: "SET_LOADING"});
@@ -42,12 +44,37 @@ const AppProvider = ({ children }) => {
         }
       };
 
+      const addProduct = async (productData, images) => {
+        try {
+          const formData = new FormData();
+      
+          formData.append('product', new Blob([JSON.stringify(productData)], { type: 'application/json' }));
+      
+          images.forEach((image, index) => {
+            formData.append(`images`, image);
+          });
+      
+          await axios.post(ADD_PRODUCT_API, formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          });
+      
+          dispatch({ type: "ADD_PRODUCT", payload: productData });
+        } catch (error) {
+          console.error("Error adding product:", error);
+        }
+      };
+      
+      
+      
+
     useEffect(()=>{
         getProducts(API);
     },[])
 
     return (
-    <AppContext.Provider value={{...state, getSingleProduct}}>
+    <AppContext.Provider value={{...state, getSingleProduct, addProduct}}>
         {children}
     </AppContext.Provider>
     )

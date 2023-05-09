@@ -45,6 +45,13 @@ const ProductReducer = (state, action) => {
           isSingleLoading: false,
           isError: true,
         };
+
+      case "ADD_PRODUCT":
+        return {
+          ...state,
+          products: [...state.products, action.payload],
+        };
+    
   
       default:
         return state;

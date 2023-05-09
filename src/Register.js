@@ -25,7 +25,7 @@ const Register = () => {
   const [address, setAddress] = useState('');
   const [zipcode, setZipcode] = useState('');
   const [city, setCity] = useState('');
-  const [state, setState] = useState('');
+  const [state, setState] = useState(''); 
   const [country, setCountry] = useState('');
   const [latitude, setLatitude] = useState('');
   const [longitude, setLongitude] = useState('');

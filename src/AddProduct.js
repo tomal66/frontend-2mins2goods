@@ -1,7 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
+import { useProductContext } from './context/productcontext';
+import { useAuthContext } from './context/auth_context';
+import useGeoLocation from './helpers/useGeoLocation';
 
 const AddProduct = () => {
     const nav = useNavigate();
@@ -12,23 +15,59 @@ const AddProduct = () => {
     const [quantity, setQuantity] = useState('');
     const [category, setCategory] = useState('');
     const [images, setImages] = useState([]);
-  
-    const handleSubmit = (e) => {
-      e.preventDefault();
-      // Your implementation to upload the product data to the server.
-      console.log('Title:', title, 'Description:', description, 'Price:', price, 'Quantity:', quantity, 'Category:', category, 'Images:', images);
-      Swal.fire({
-        title: 'Success',
-        text: 'Product Added!',
-        icon: 'success',
-        confirmButtonColor: '#E6400B',
-        confirmButtonText: 'Done',
-        heightAuto: true,
-      }).then((result) => {
-        if (result.isConfirmed) {
-          nav('/seller-dashboard'); // Replace '/' with the desired path
+    const [latitude, setLatitude] = useState('');
+    const [longitude, setLongitude] = useState('');
+
+    const { addProduct } = useProductContext();
+    const {username} = useAuthContext();
+    const location = useGeoLocation();
+
+    useEffect(() => {
+        if (location.loaded && !location.error) {
+          setLatitude(location.coordinates.lat);
+          setLongitude(location.coordinates.long);
         }
-      });
+      }, [location, setLatitude, setLongitude]);
+
+  
+    const handleSubmit = async (e) => {
+      e.preventDefault();
+
+      const productData = {
+        title,
+        description,
+        price,
+        quantity,
+        latitude,
+        longitude,
+        sellerUsername: username,
+        category,
+      };
+
+      console.log(productData);
+      try{
+        await addProduct(productData, images);
+        Swal.fire({
+            title: 'Success',
+            text: 'Product Added!',
+            icon: 'success',
+            confirmButtonColor: '#E6400B',
+            confirmButtonText: 'Done',
+            heightAuto: true,
+          }).then((result) => {
+            if (result.isConfirmed) {
+              nav('/seller-dashboard'); // Replace '/' with the desired path
+            }
+          });
+      } catch(error){
+        Swal.fire({
+            title: 'Error',
+            text: 'Failed to add product',
+            icon: 'error',
+            confirmButtonText: 'Try Again',
+            heightAuto: true,
+          });
+      }
       //nav('/');
     };
   
