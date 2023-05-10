@@ -22,7 +22,7 @@ const Login = () => {
     //   setMessage('Invalid credentials. Please try again.');
     //   console.log('Error:', error);
     // });
-  };
+  }; 
 
   useEffect(() => {
     if (isAuthenticated) {
