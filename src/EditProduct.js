@@ -1,24 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import { useProductContext } from './context/productcontext';
 import { useAuthContext } from './context/auth_context';
 import useGeoLocation from './helpers/useGeoLocation';
 
-const AddProduct = () => {
+const EditProduct = () => {
     const nav = useNavigate();
-    const [currentStep, setCurrentStep] = useState(1);
-    const [title, setTitle] = useState('');
-    const [description, setDescription] = useState('');
-    const [price, setPrice] = useState('');
-    const [quantity, setQuantity] = useState('');
-    const [category, setCategory] = useState('');
-    const [images, setImages] = useState([]);
-    const [latitude, setLatitude] = useState('');
-    const [longitude, setLongitude] = useState('');
-
-    const { addProduct } = useProductContext();
+    const { id } = useParams();
+    const API = "http://localhost:8080/api/product";
+    const { getSingleProduct, isSingleLoading, singleProduct, editProduct } = useProductContext();
+    const [productId, setProductId] = useState(id);
+    const [title, setTitle] = useState(singleProduct.title);
+    const [description, setDescription] = useState(singleProduct.description);
+    const [price, setPrice] = useState(singleProduct.price);
+    const [quantity, setQuantity] = useState(singleProduct.quantity);
+    const [category, setCategory] = useState(singleProduct.category);
+    const [latitude, setLatitude] = useState(singleProduct.latitude);
+    const [longitude, setLongitude] = useState(singleProduct.longitude);
     const {username} = useAuthContext();
     const location = useGeoLocation();
 
@@ -28,12 +28,29 @@ const AddProduct = () => {
           setLongitude(location.coordinates.long);
         }
       }, [location, setLatitude, setLongitude]);
+    
+    useEffect(() => {
+        getSingleProduct(`${API}/${id}`);
+    }, []);
+    
+    useEffect(() => {
+        setTitle(singleProduct.title);
+        setDescription(singleProduct.description);
+        setPrice(singleProduct.price);
+        setQuantity(singleProduct.quantity);
+        setCategory(singleProduct.category);
+        setLatitude(singleProduct.latitude);
+        setLongitude(singleProduct.longitude);
+    }, [singleProduct]);
+    
+    
 
   
     const handleSubmit = async (e) => {
       e.preventDefault();
 
       const productData = {
+        productId,
         title,
         description,
         price,
@@ -46,10 +63,10 @@ const AddProduct = () => {
 
       console.log(productData);
       try{
-        await addProduct(productData, images);
+        await editProduct(id, productData);
         Swal.fire({
             title: 'Success',
-            text: 'Product Added!',
+            text: 'Product Updated!',
             icon: 'success',
             confirmButtonColor: '#E6400B',
             confirmButtonText: 'Done',
@@ -62,7 +79,7 @@ const AddProduct = () => {
       } catch(error){
         Swal.fire({
             title: 'Error',
-            text: 'Failed to add product',
+            text: 'Failed to update product',
             icon: 'error',
             confirmButtonText: 'Try Again',
             heightAuto: true,
@@ -71,30 +88,13 @@ const AddProduct = () => {
       //nav('/');
     };
   
-    const handleNext = () => {
-      if (title && description && price && quantity && category) {
-        setCurrentStep(2);
-      } else {
-        alert('Please fill in all the required fields');
-      }
-    };
   
-    const handleImageChange = (e, index) => {
-      const newImages = [...images];
-      newImages[index] = e.target.files[0];
-      setImages(newImages);
-    };
   
     return (
       <Wrapper>
         <Container>
-          <Title>Add Product</Title>
-  
-          {currentStep === 1 && (
-            <Form onSubmit={(e) => {
-              e.preventDefault();
-              handleNext();
-            }}>
+          <Title>Edit Product</Title>
+            <Form onSubmit={handleSubmit}>
                 <Label htmlFor="title">Title</Label>
               <Input
                 type="text"
@@ -145,42 +145,15 @@ const AddProduct = () => {
                 <option value="">Select a category</option>
                 <option value="Electronics">Electronics</option>
                 <option value="Clothing">Clothing</option>
-                <option value="Home & Garden">Home & Garden</option> 
+                <option value="Home & Garden">Home & Garden</option>
                 <option value="Sports & Outdoors">Sports & Outdoors</option>
                 <option value="Health & Beauty">Health & Beauty</option>
                 <option value="Toys & Hobbies">Toys & Hobbies</option>
                 <option value="Automotive">Automotive</option>
                 <option value="Books & Media">Books & Media</option>
             </Select>
-              <Button type="submit">Next</Button>
+              <Button type="submit">Update</Button>
             </Form>
-          )}
-  
-          {currentStep === 2 && (
-            <Form onSubmit={handleSubmit}>
-                <Label htmlFor="desctiption">Images</Label>
-              {Array.from({ length: 4 }, (_, index) => (
-                <Input
-                  key={index}
-                  type="file"
-                  id={`image-${index}`}
-                  name={`image-${index}`}
-                  onChange={(e) => handleImageChange(e, index)}
-                  required
-                />
-              ))}
-              <Button type="submit">Add Product</Button>
-            </Form>
-          )}
-  
-          <Options>
-            {currentStep === 1 && (
-              <Option onClick={() => nav('/')}>Cancel</Option>
-            )}
-            {currentStep === 2 && (
-              <Option onClick={() => setCurrentStep(1)}>Back</Option>
-            )}
-          </Options>
         </Container>
         </Wrapper>
 );
@@ -329,4 +302,4 @@ text-decoration: underline;
 }
 `;
 
-export default AddProduct
+export default EditProduct

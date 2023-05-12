@@ -37,7 +37,7 @@ const ProductReducer = (state, action) => {
           ...state,
           isSingleLoading: false,
           singleProduct: action.payload,
-        };
+        }; 
   
       case "SET_SINGLE_ERROR":
         return {
@@ -57,6 +57,12 @@ const ProductReducer = (state, action) => {
           ...state,
           sellerProducts: action.payload,
         };
+
+      case "EDIT_PRODUCT":
+        const updatedProducts = state.products.map(product => 
+            product.id === action.payload.productId ? action.payload.updatedProduct : product
+        );
+        return { ...state, products: updatedProducts };
 
       case "DELETE_PRODUCT":
         return {

@@ -70,6 +70,18 @@ const AppProvider = ({ children }) => {
         }
       };
 
+    const editProduct = async (productId, updatedProductData) => {
+      try {
+          const response = await axios.put(`http://localhost:8080/api/product/${productId}`, updatedProductData);
+    
+          dispatch({ type: "EDIT_PRODUCT", payload: {productId, updatedProduct: response.data} });
+      } catch (error) {
+          console.error("Error editing product:", error);
+      }
+
+    };
+    
+
       const deleteProduct = async (productId) => {
         try {
           await axios.delete(`http://localhost:8080/api/product/${productId}`);
@@ -106,16 +118,12 @@ const AppProvider = ({ children }) => {
         }
       };
       
-      
-      
-      
-
     useEffect(()=>{
         getProducts(API);
     },[])
 
     return (
-    <AppContext.Provider value={{...state, getSingleProduct, addProduct, getSellerProducts, fetchImage, deleteProduct}}>
+    <AppContext.Provider value={{...state, getSingleProduct, addProduct, getSellerProducts, fetchImage, deleteProduct, editProduct}}>
         {children}
     </AppContext.Provider>
     )

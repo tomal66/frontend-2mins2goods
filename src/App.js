@@ -20,6 +20,7 @@ import MyProducts from './MyProducts';
 import Orders from './Orders'
 import SellerRegister from './SellerRegister';
 import AddProduct from './AddProduct';
+import EditProduct from './EditProduct';
 
 
 function App() {
@@ -76,6 +77,7 @@ function App() {
             <Route path="/seller-dashboard" element={<SellerDashboard />} />
             <Route path="/my-products" element={<MyProducts />} />
             <Route path="/add-products" element={<AddProduct />} />
+            <Route path="/edit-product/:id" element={<EditProduct />} />
             <Route path="/orders" element={<Orders />} />
           </Route>
 

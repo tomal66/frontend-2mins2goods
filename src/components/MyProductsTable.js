@@ -6,7 +6,7 @@ import { FiEdit2, FiTrash2 } from 'react-icons/fi';
 import { useAuthContext } from '../context/auth_context';
 import ImageCell from './ImageCell';
 import Swal from 'sweetalert2';
-
+import { useNavigate } from 'react-router-dom';
 
 const MyProductsTable = () => {
     const { getSellerProducts, sellerProducts, deleteProduct } = useProductContext();
@@ -14,6 +14,8 @@ const MyProductsTable = () => {
     useEffect(()=>{
       getSellerProducts(username);
   },[])
+
+  const nav = useNavigate();
 
     const products = sellerProducts;
 
@@ -54,8 +56,9 @@ const MyProductsTable = () => {
         <>
             <FiEdit2
               className="icon edit-icon"
-              
+              onClick={() => handleEdit(row.productId)}
             />
+            
             <FiTrash2 
               className="icon delete-icon"
               onClick={() => handleDelete(row.productId)}
@@ -108,6 +111,10 @@ const MyProductsTable = () => {
         }
       })
     };
+    
+    const handleEdit = (id) => {
+      nav(`/edit-product/${id}`);
+    };
 
     const customStyles = {
         header: {
@@ -141,7 +148,7 @@ const MyProductsTable = () => {
   
     return (
       <Wrapper>
-        <div className="container">
+        <div className="container"> 
           <DataTable
             title="Products"
             columns={columns}
