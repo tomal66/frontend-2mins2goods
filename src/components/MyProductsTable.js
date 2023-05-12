@@ -5,10 +5,11 @@ import styled from 'styled-components'
 import { FiEdit2, FiTrash2 } from 'react-icons/fi';
 import { useAuthContext } from '../context/auth_context';
 import ImageCell from './ImageCell';
+import Swal from 'sweetalert2';
 
 
 const MyProductsTable = () => {
-    const { getSellerProducts, sellerProducts, fetchImage } = useProductContext();
+    const { getSellerProducts, sellerProducts, deleteProduct } = useProductContext();
     const {username} = useAuthContext();
     useEffect(()=>{
       getSellerProducts(username);
@@ -55,14 +56,57 @@ const MyProductsTable = () => {
               className="icon edit-icon"
               
             />
-            <FiTrash2 className="icon delete-icon" />
+            <FiTrash2 
+              className="icon delete-icon"
+              onClick={() => handleDelete(row.productId)}
+              />
           </>
         ),
       },
     ], []);
   
     const handleDelete = (id) => {
-      // Implement your delete product logic here
+      Swal.fire({
+        title: 'Are you sure?',
+        text: 'You will not be able to recover this product!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, delete it!',
+        confirmButtonColor: '#d33',
+        cancelButtonText: 'No, keep it'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          deleteProduct(id)
+            .then(() => {
+              Swal.fire({
+                title: 'Deleted!',
+                text: 'Your product has been deleted!',
+                icon: 'success',
+                confirmButtonText: 'Ok',
+                confirmButtonColor: '#E6400B' // This will set the confirm button color to red
+              });
+              // Here you could also add any additional actions on success (like refreshing the product list)
+            })
+            .catch(() => {
+              Swal.fire({
+                title: 'Failed!',
+                text: 'There was an issue deleting your product.',
+                icon: 'error',
+                confirmButtonText: 'Ok',
+                confirmButtonColor: '#E6400B' // This will set the confirm button color to red
+              });
+              // Here you could also add any additional actions on failure
+            })
+        } else if (result.dismiss === Swal.DismissReason.cancel) {
+          Swal.fire({
+            title: 'Cancelled!',
+            text: 'Your product is safe.',
+            icon: 'success',
+            confirmButtonText: 'Ok',
+            confirmButtonColor: '#E6400B' // This will set the confirm button color to red
+          });
+        }
+      })
     };
 
     const customStyles = {

@@ -69,6 +69,17 @@ const AppProvider = ({ children }) => {
           console.error("Error adding product:", error);
         }
       };
+
+      const deleteProduct = async (productId) => {
+        try {
+          await axios.delete(`http://localhost:8080/api/product/${productId}`);
+      
+          dispatch({ type: "DELETE_PRODUCT", payload: productId });
+        } catch (error) {
+          console.error("Error deleting product:", error);
+        }
+      };
+      
       
       const getSellerProducts = async (seller) => {
         try {
@@ -104,7 +115,7 @@ const AppProvider = ({ children }) => {
     },[])
 
     return (
-    <AppContext.Provider value={{...state, getSingleProduct, addProduct, getSellerProducts, fetchImage}}>
+    <AppContext.Provider value={{...state, getSingleProduct, addProduct, getSellerProducts, fetchImage, deleteProduct}}>
         {children}
     </AppContext.Provider>
     )

@@ -52,14 +52,20 @@ const ProductReducer = (state, action) => {
           products: [...state.products, action.payload],
         };
         
-        case "SET_SELLER_PRODUCTS":
-          return {
-            ...state,
-            sellerProducts: action.payload,
-          };
+      case "SET_SELLER_PRODUCTS":
+        return {
+          ...state,
+          sellerProducts: action.payload,
+        };
+
+      case "DELETE_PRODUCT":
+        return {
+          ...state,
+          sellerProducts: state.sellerProducts.filter(
+            (product) => product.productId !== action.payload
+          ),
+        };
         
-    
-  
       default:
         return state;
     }
