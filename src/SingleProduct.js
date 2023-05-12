@@ -21,7 +21,7 @@ const SingleProduct = () => {
   const { id } = useParams();
 
   const {
-    id: alias,
+    productId,
     title,
     description,
     price,
@@ -64,7 +64,7 @@ const SingleProduct = () => {
 
   return (
     <Wrapper>
-      <PageNavigation title={id} />
+      <PageNavigation title={productId} />
       <Container className="container">
         <div className="grid grid-two-column">
           {/* product Images  */}
@@ -109,7 +109,7 @@ const SingleProduct = () => {
                 <span> {quantity > 0 ? "In Stock" : "Not Available"}</span>
               </p>
               <p>
-                ID : <span> {id} </span>
+                ID : <span> {productId} </span>
               </p>
               <p>
                 Seller : <span> {sellerUsername} </span>

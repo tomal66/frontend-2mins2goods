@@ -9,7 +9,7 @@ import { useCartContext } from "../context/cartcontext";
 const AddToCart = ({ product }) => {
   const { addToCart } = useCartContext();
 
-  const { id, quantity } = product;
+  const { productId, quantity } = product;
 
   const [amount, setAmount] = useState(1);
 
@@ -31,7 +31,7 @@ const AddToCart = ({ product }) => {
         setIncrease={setIncrease}
       />
 
-      <NavLink to="/cart" onClick={() => addToCart(id, amount, product)}>
+      <NavLink to="/cart" onClick={() => addToCart(productId, amount, product)}>
         <Button className="btn">Add To Cart</Button>
       </NavLink>
     </Wrapper>

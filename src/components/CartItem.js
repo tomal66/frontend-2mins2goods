@@ -3,34 +3,25 @@ import FormatPrice from "../helpers/FormatPrice";
 import CartAmountToggle from "./CartAmountToggle";
 import { FaTrash } from "react-icons/fa";
 import { useCartContext } from "../context/cartcontext";
+import ImageCell from "./ImageCell";
+import { useNavigate } from "react-router-dom";
 
-const CartItem = ({ id, name, image, color, price, amount }) => {
+const CartItem = ({ productId, title, image, price, amount }) => {
   const { removeItem, setDecrease, setIncrement } = useCartContext();
+  const nav = useNavigate();
 
-  // const setDecrease = () => {
-  //   amount > 1 ? setAmounts(amount - 1) : setAmounts(1);
-  // };
+  const shortTitle = title.length > 25 ? title.substring(0, 25) + '...' : title;
 
-  // const setIncrease = () => {
-  //   amount < stock ? setAmounts(amount + 1) : setAmounts(stock);
-  // };
+  const goToProduct = (productId) => {
+    nav(`/singleproduct/${productId}`);
+  }
 
   return (
     <div className="cart_heading grid grid-five-column">
-      <div className="cart-image--name">
+      <div className="cart-image--name" onClick={()=>goToProduct(productId)}>
+        <ImageCell imageId={image}/>
         <div>
-          <figure>
-            <img src={image} alt={id} />
-          </figure>
-        </div>
-        <div>
-          <p>{name}</p>
-          <div className="color-div">
-            <p>color:</p>
-            <div
-              className="color-style"
-              style={{ backgroundColor: color, color: color }}></div>
-          </div>
+          <p>{shortTitle}</p>
         </div>
       </div>
       {/* price   */}
@@ -43,8 +34,8 @@ const CartItem = ({ id, name, image, color, price, amount }) => {
       {/* Quantity  */}
       <CartAmountToggle
         amount={amount}
-        setDecrease={() => setDecrease(id)}
-        setIncrease={() => setIncrement(id)}
+        setDecrease={() => setDecrease(productId)}
+        setIncrease={() => setIncrement(productId)}
       />
 
       {/* //Subtotal */}
@@ -55,7 +46,7 @@ const CartItem = ({ id, name, image, color, price, amount }) => {
       </div>
 
       <div>
-        <FaTrash className="remove_icon" onClick={() => removeItem(id)} />
+        <FaTrash className="remove_icon" onClick={() => removeItem(productId)} />
       </div>
     </div>
   );
