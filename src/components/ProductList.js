@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useFilterContext } from "../context/filter_context";
 import GridView from "./GridView";
 import ListView from "./ListView";
@@ -12,7 +12,10 @@ const ProductList = () => {
   const lastProductIndex = currentPage*productsPerPage;
   const firstProductIndex = lastProductIndex-productsPerPage;
   const currentProducts = filter_products.slice(firstProductIndex, lastProductIndex);
- 
+
+  useEffect(() => {
+    console.log(filter_products);
+  }, []);
 
   if(currentProducts.length===0)
   {

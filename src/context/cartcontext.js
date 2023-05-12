@@ -5,10 +5,15 @@ const CartContext = createContext();
 
 const getLocalCartData = () => {
   let localCartData = localStorage.getItem("2m2gcart");
-  if (localCartData === []) {
+  if (!localCartData || localCartData.length === 0) {
     return [];
   } else {
-    return JSON.parse(localCartData);
+    try {
+      return JSON.parse(localCartData);
+    } catch (error) {
+      console.error("Error parsing cart data from localStorage", error);
+      return [];
+    }
   }
 };
 
@@ -17,14 +22,14 @@ const initialState = {
   cart: getLocalCartData(),
   total_item: "",
   total_price: "",
-  shipping_fee: 50000,
+  shipping_fee: 50,
 };
 
 const CartProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  const addToCart = (id, color, amount, product) => {
-    dispatch({ type: "ADD_TO_CART", payload: { id, color, amount, product } });
+  const addToCart = (id, amount, product) => {
+    dispatch({ type: "ADD_TO_CART", payload: { id, amount, product } });
   };
 
   // increment and decrement the product

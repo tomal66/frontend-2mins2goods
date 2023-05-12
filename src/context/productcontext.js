@@ -1,11 +1,12 @@
 import axios from "axios";
-import { createContext, useContext, useEffect, useReducer } from "react";
+import { createContext, useContext, useEffect, useReducer, useState } from "react";
 import reducer from "../reducer/productreducer";
 import { useAuthContext } from "./auth_context";
+import useGeoLocation from "../helpers/useGeoLocation";
 
 const AppContext = createContext();
 
-const API = "https://api.pujakaitem.com/api/products";
+const API = "http://localhost:8080/api/product/nearby";
 const ADD_PRODUCT_API = "http://localhost:8080/api/product/add";
 const SELLER_PRODUCTS_API = "http://localhost:8080/api/product/seller"
 
@@ -22,19 +23,32 @@ const inialState = {
 const AppProvider = ({ children }) => {
  
     const [state, dispatch] = useReducer(reducer, inialState);
+    const [latitude, setLatitude] = useState('');
+    const [longitude, setLongitude] = useState('');
+    const location = useGeoLocation();
+
+    useEffect(() => {
+      if (location.loaded && !location.error) {
+        setLatitude(location.coordinates.lat);
+        setLongitude(location.coordinates.long);
+        console.log(latitude, longitude);
+      }
+    }, [location, setLatitude, setLongitude]);
 
 
 
-    const getProducts = async(url) => {
-        dispatch({type: "SET_LOADING"});
-        try {
-            const res = await axios.get(url);
-            const products = await res.data;
-            dispatch({ type: "SET_API_DATA", payload: products });
-        } catch (error) {
-            dispatch({type: "API_ERROR"});
-        }
-    }
+    const getProducts = async(url, latitude, longitude) => {
+      dispatch({type: "SET_LOADING"});
+      try {
+          const res = await axios.get(`${url}?latitude=${latitude}&longitude=${longitude}`);
+          const products = await res.data;
+          
+          dispatch({ type: "SET_API_DATA", payload: products });
+      } catch (error) {
+          dispatch({type: "API_ERROR"});
+      }
+    };
+  
 
     //Single Product API call
     const getSingleProduct = async (url) => {
@@ -118,9 +132,12 @@ const AppProvider = ({ children }) => {
         }
       };
       
-    useEffect(()=>{
-        getProducts(API);
-    },[])
+      useEffect(() => {
+        if (latitude && longitude) {
+            getProducts(API, latitude, longitude);
+        }
+    }, [latitude, longitude]);
+    
 
     return (
     <AppContext.Provider value={{...state, getSingleProduct, addProduct, getSellerProducts, fetchImage, deleteProduct, editProduct}}>

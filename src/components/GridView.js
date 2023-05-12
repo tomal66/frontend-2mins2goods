@@ -80,6 +80,7 @@ const Wrapper = styled.section`
     h3 {
       color: ${({ theme }) => theme.colors.text};
       text-transform: capitalize;
+      
     }
 
     .btn {

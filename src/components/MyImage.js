@@ -1,8 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 
-const MyImage = ({ imgs = [{ url: "" }] }) => {
-  const [mainImage, setMainImage] = useState(imgs[0]);
+const MyImage = ({ imgs = [] }) => {
+  const [mainImage, setMainImage] = useState("");
+
+  useEffect(() => {
+    if (imgs.length > 0) {
+      setMainImage(imgs[0]);
+    }
+  }, [imgs]);
 
   return (
     <Wrapper>
@@ -11,8 +17,8 @@ const MyImage = ({ imgs = [{ url: "" }] }) => {
           return (
             <figure>
               <img
-                src={curElm.url}
-                alt={curElm.filename}
+                src={curElm}
+                alt={index}
                 className="box-image--style"
                 key={index}
                 onClick={() => setMainImage(curElm)}
@@ -24,7 +30,7 @@ const MyImage = ({ imgs = [{ url: "" }] }) => {
       {/* 2nd column  */}
 
       <div className="main-screen">
-        <img src={mainImage.url} alt={mainImage.filename} />
+        <img src={mainImage} alt={0} />
       </div>
     </Wrapper>
   );

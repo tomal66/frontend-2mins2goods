@@ -2,32 +2,14 @@ import { NavLink } from "react-router-dom";
 import styled from "styled-components";
 import FormatPrice from "../helpers/FormatPrice";
 import { Button } from "../styles/Button";
+import ListItem from "./ListItem"
 
 const ListView = ({ products }) => {
   return (
     <Wrapper className="section">
       <div className="container grid"> 
         {products.map((curElem) => {
-          const { id, name, image, price, description } = curElem;
-          return (
-            <div className="card grid grid-two-column">
-              <figure>
-                <img src={image} alt={name} />
-              </figure>
-
-              <div className="card-data">
-                <h3>{name}</h3>
-                <p>
-                  <FormatPrice price={price} />
-                </p>
-                <p>{description.slice(0, 90)}...</p>
-
-                <NavLink to={`/singleproduct/${id}`} className="btn-main">
-                  <Button className="btn">Read More</Button>
-                </NavLink>
-              </div>
-            </div>
-          );
+          return <ListItem key={curElem.id} {...curElem} />
         })}
       </div>
     </Wrapper>
@@ -95,21 +77,21 @@ const Wrapper = styled.section`
     .btn {
       margin: 2rem 0;
       background-color: rgb(0 0 0 / 0%);
-      border: 0.1rem solid rgb(98 84 243);
+      border: 0.1rem solid #E6400B;
       display: flex;
       justify-content: center;
       align-items: center;
-      color: rgb(98 84 243);
+      color: #E6400B;
 
       &:hover {
-        background-color: rgb(98 84 243);
+        background-color: #E6400B;
       }
 
       &:hover a {
         color: #fff;
       }
       a {
-        color: rgb(98 84 243);
+        color: #E6400B;
         font-size: 1.4rem;
       }
     }
