@@ -5,10 +5,31 @@ import { NavLink } from "react-router-dom";
 import { Button } from "./styles/Button";
 import FormatPrice from "./helpers/FormatPrice";
 import NoProduct from "./components/NoProduct";
+import { useState, useEffect } from "react";
+import Swal from "sweetalert2";
 
 const Cart = () => {
   const { cart, clearCart, total_price, shipping_fee } = useCartContext();
-  // console.log("🚀 ~ file: Cart.js ~ line 6 ~ Cart ~ cart", cart);
+  const multipleSellers = new Set(cart.map(item => item.seller)).size > 1;
+
+  const [deliveryOption, setDeliveryOption] = useState('pickup'); // default option
+
+  const handleDeliveryOptionChange = (e) => {
+
+    if (multipleSellers && e.target.value === 'cod') {
+      Swal.fire({
+        title: 'Unavailable!',
+        text: 'Cash on Delivery is not available for products from multiple sellers.',
+        icon: 'warning',
+        confirmButtonText: 'Ok',
+        confirmButtonColor: '#E6400B',
+      })
+      
+      return;
+    }
+    setDeliveryOption(e.target.value);
+  }
+  
 
   if (cart.length === 0) {
     const data = {
@@ -19,7 +40,7 @@ const Cart = () => {
     );
   }
 
-  const checkout = () => {
+  const placeOrder = () => {
     console.log("Checkout process started...");
   }
 
@@ -48,8 +69,33 @@ const Cart = () => {
             clear cart
           </Button>
         </div>
-
-        {/* order total_amount */}
+        <div className="order-section">
+          <DeliveryOptionCard>
+            <h4>Delivery Options:</h4>
+            <div>
+              <input
+                type="radio"
+                id="cash-on-delivery"
+                name="delivery-option"
+                value="cod"
+                checked={deliveryOption === 'cod'}
+                onChange={handleDeliveryOptionChange}
+              />
+              <label htmlFor="cash-on-delivery">Cash on Delivery</label>
+            </div>
+            <div>
+              <input
+                type="radio"
+                id="pickup"
+                name="delivery-option"
+                value="pickup"
+                checked={deliveryOption === 'pickup'}
+                onChange={handleDeliveryOptionChange}
+              />
+              <label htmlFor="pickup">Pickup</label>
+            </div>
+          </DeliveryOptionCard>
+          {/* order total_amount */}
         <div className="order-total--amount">
           <div className="order-total--subdata">
             <div>
@@ -71,11 +117,12 @@ const Cart = () => {
                 <FormatPrice price={shipping_fee + total_price} />
               </p>
             </div>
-            <Button className="btn" onClick={checkout}>
-            Checkout
+            <Button className="btn" onClick={placeOrder}>
+            Place Order
           </Button>
           </div>
           
+        </div>
         </div>
       </div>
     </Wrapper>
@@ -93,6 +140,36 @@ const EmptyDiv = styled.div`
     font-weight: 300;
   }
 `;
+
+const DeliveryOptionCard = styled.div`
+  background: #fafafa; // match with other cards
+  border: 0.1rem solid #f0f0f0;
+  padding: 3.2rem;
+  margin-right: 1rem;
+  margin-top: 4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.8rem;
+  width: 45%; // adjust width
+  height: 20rem; // adjust height
+
+  h4 {
+    margin-bottom: 0.5rem;
+    font-size: 2.4rem;
+    font-weight: 600;
+  }
+
+  div {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  label {
+    font-size: 1.4rem;
+  }
+`;
+
 
 const Wrapper = styled.section`
   padding: 9rem 0;
@@ -202,6 +279,12 @@ const Wrapper = styled.section`
     font-size: 1.6rem;
     color: #e74c3c;
     cursor: pointer;
+  }
+  
+  .order-section {
+    display: flex;
+    justify-content: space-between;
+    margin: 4.8rem 0;
   }
 
   .order-total--amount {

@@ -10,6 +10,7 @@ const cartReducer = (state, action) => {
       image: product.images[0],
       price: product.price,
       max: product.quantity,
+      seller: product.sellerUsername
     };
 
     return {
@@ -30,6 +31,7 @@ const cartReducer = (state, action) => {
         image: item.product.images[0],
         price: item.product.price,
         max: item.product.quantity,
+        seller: item.product.sellerUsername
       })),
     };
   }
