@@ -9,13 +9,15 @@ import { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import { useAuthContext } from "./context/auth_context";
 import { useOrderContext } from "./context/order_context";
+import { useNavigate } from "react-router-dom";
 
 const Cart = () => {
-  const { cart, clearCart, total_price, shipping_fee } = useCartContext();
+  const { cart, clearCart, total_price, shipping_fee ,fetchCartItems } = useCartContext();
   const { username } = useAuthContext();
   const multipleSellers = new Set(cart.map(item => item.seller)).size > 1;
   const { createOrder } = useOrderContext();
   const [deliveryOption, setDeliveryOption] = useState('pickup'); // default option
+  const nav = useNavigate();
 
   const handleDeliveryOptionChange = (e) => {
 
@@ -59,7 +61,18 @@ const Cart = () => {
     
     // Here you would typically send this DTO to your server or another process
     await createOrder(orderDTO);
-    console.log(orderDTO);
+    Swal.fire({
+      title: 'Success!',
+      text: 'Your order has been placed!',
+      icon: 'success',
+      confirmButtonColor: '#E6400B',
+      confirmButtonText: 'Back to Home',
+      }).then((result) => {
+          if (result.isConfirmed) {
+              fetchCartItems(username);
+              nav('/'); // redirect to home
+          }
+    });
   }
 
   return (

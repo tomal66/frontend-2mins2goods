@@ -34,8 +34,9 @@ const CartItem = ({ itemId, productId, title, image, price, amount, max }) => {
       {/* Quantity  */}
       <CartAmountToggle
         amount={amount}
-        //setDecrease={() => setDecrease(itemId, productId, amount)}
-        //setIncrease={() => setIncrement(itemId, productId, amount, max)}
+        showButtons={false}
+        setDecrease={() => setDecrease()}
+        setIncrease={() => setIncrement()}
       />
 
       {/* //Subtotal */}
