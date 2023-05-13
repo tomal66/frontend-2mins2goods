@@ -6,7 +6,7 @@ import { useCartContext } from "../context/cartcontext";
 import ImageCell from "./ImageCell";
 import { useNavigate } from "react-router-dom";
 
-const CartItem = ({ productId, title, image, price, amount }) => {
+const CartItem = ({ itemId, productId, title, image, price, amount }) => {
   const { removeItem, setDecrease, setIncrement } = useCartContext();
   const nav = useNavigate();
 
@@ -46,7 +46,7 @@ const CartItem = ({ productId, title, image, price, amount }) => {
       </div>
 
       <div>
-        <FaTrash className="remove_icon" onClick={() => removeItem(productId)} />
+        <FaTrash className="remove_icon" onClick={async () => await removeItem(itemId)} />
       </div>
     </div>
   );

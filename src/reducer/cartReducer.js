@@ -59,7 +59,7 @@ const cartReducer = (state, action) => {
         max: item.product.quantity,
       })),
     };
-  }  
+  }
 
   // to set the increment and decrement
   if (action.type === "SET_DECREMENT") {
@@ -104,7 +104,7 @@ const cartReducer = (state, action) => {
 
   if (action.type === "REMOVE_ITEM") {
     let updatedCart = state.cart.filter(
-      (curItem) => curItem.productId !== action.payload
+      (curItem) => curItem.itemId !== action.payload
     );
     return {
       ...state,

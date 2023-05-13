@@ -59,7 +59,7 @@ const Cart = () => {
               </p>
             </div>
             <div>
-              <p>shipping fee:</p>
+              <p>platform fee:</p>
               <p>
                 <FormatPrice price={shipping_fee} />
               </p>

@@ -34,6 +34,7 @@ const CartProvider = ({ children }) => {
       console.error('There was an error adding the item to the cart:', error);
     }
   };
+
   
   const fetchProductDetails = async (productId) => {
     const response = await axios.get(`http://localhost:8080/api/product/${productId}`);
@@ -71,14 +72,25 @@ const CartProvider = ({ children }) => {
   };
 
   // to remove the individual item from cart
-  const removeItem = (id) => {
-    dispatch({ type: "REMOVE_ITEM", payload: id });
+  const removeItem = async (itemId) => {
+    try {
+      await axios.delete(`http://localhost:8080/api/cartitem/${itemId}`);
+      dispatch({ type: "REMOVE_ITEM", payload: itemId });
+    } catch (error) {
+      console.error("Error removing item from cart:", error);
+    }
   };
 
   // to clear the cart
-  const clearCart = () => {
-    dispatch({ type: "CLEAR_CART" });
+  const clearCart = async () => {
+    try {
+      await axios.delete(`http://localhost:8080/api/cartitem/buyer/${username}`);
+      dispatch({ type: "CLEAR_CART" });
+    } catch (error) {
+      console.error("Error clearing cart:", error);
+    }
   };
+  
 
   // to add the data in localStorage
   // get vs set
