@@ -9,7 +9,14 @@ const orderReducer = (state, action) => {
     if (action.type === "LOAD_ORDERS") {
       return {
         ...state,
-        orders: action.payload,
+        userOrders: action.payload,
+      };
+    }
+
+    if (action.type === "LOAD_SELLER_ORDERS") {
+      return {
+        ...state,
+        sellerOrders: action.payload,
       };
     }
   

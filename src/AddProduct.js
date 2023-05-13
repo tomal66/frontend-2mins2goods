@@ -5,6 +5,7 @@ import Swal from 'sweetalert2';
 import { useProductContext } from './context/productcontext';
 import { useAuthContext } from './context/auth_context';
 import useGeoLocation from './helpers/useGeoLocation';
+import { useUserContext } from './context/user_context';
 
 const AddProduct = () => {
     const nav = useNavigate();
@@ -20,14 +21,14 @@ const AddProduct = () => {
 
     const { addProduct } = useProductContext();
     const {username} = useAuthContext();
-    const location = useGeoLocation();
+    const { user } = useUserContext();
 
     useEffect(() => {
-        if (location.loaded && !location.error) {
-          setLatitude(location.coordinates.lat);
-          setLongitude(location.coordinates.long);
-        }
-      }, [location, setLatitude, setLongitude]);
+      if (user) {
+        setLatitude(user.address.latitude);
+        setLongitude(user.address.longitude);
+      }
+    }, [user]);
 
   
     const handleSubmit = async (e) => {

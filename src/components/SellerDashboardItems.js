@@ -34,7 +34,7 @@ const SellerDashboardItems = () => {
 
                 <div className="services-2">
                 <div className="services-colum-2">
-                    <NavLink to="/products">
+                    <NavLink to="/orders">
                     <div>
                         <CgShoppingCart className="icon" />
                         <h3>Orders</h3>

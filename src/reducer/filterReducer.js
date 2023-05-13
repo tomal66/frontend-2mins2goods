@@ -93,13 +93,16 @@ const filterReducer = (state, action) => {
         );
       }
 
-      if (price === 0) {
+      // convert price to a number before comparing
+      const numericPrice = Number(price);
+
+      if (numericPrice === 0) {
         tempFilterProduct = tempFilterProduct.filter(
-          (curElem) => curElem.price == price
+          (curElem) => Number(curElem.price) === numericPrice
         );
       } else {
         tempFilterProduct = tempFilterProduct.filter(
-          (curElem) => curElem.price <= price
+          (curElem) => Number(curElem.price) <= numericPrice
         );
       }
       return {

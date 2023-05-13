@@ -94,7 +94,9 @@ const CartProvider = ({ children }) => {
   }, [state.cart]);
 
   useEffect(() => {
-    fetchCartItems(username); // replace 'testUser' with actual username
+    if(username){
+      fetchCartItems(username);
+    } // replace 'testUser' with actual username
   }, [username]);
   
 

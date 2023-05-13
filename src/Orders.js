@@ -1,8 +1,9 @@
 import React from 'react'
+import MyOrdersTable from './components/MyOrdersTable'
 
 const Orders = () => {
   return (
-    <div>Orders</div>
+    <MyOrdersTable/>
   )
 }
 

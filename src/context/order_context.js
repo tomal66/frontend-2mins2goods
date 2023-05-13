@@ -12,7 +12,7 @@ const initialOrderState = {
 
 const OrderProvider = ({ children }) => {
   const [state, dispatch] = useReducer(orderReducer, initialOrderState);
-  const { username } = useAuthContext();
+  const { username, role } = useAuthContext();
 
   const createOrder = async (orderDto) => {
     try {
@@ -26,21 +26,35 @@ const OrderProvider = ({ children }) => {
   };
 
   const fetchOrders = async (username) => {
-    const response = await axios.get(`http://localhost:8080/api/order/buyer/${username}`);
+    const response = await axios.get(`http://localhost:8080/api/orders/user/${username}`);
     if (response.status === 200) {
       dispatch({ type: "LOAD_ORDERS", payload: response.data });
     }
   };
 
+  const fetchSellerOrders = async (username) => {
+    const response = await axios.get(`http://localhost:8080/api/orders/seller/${username}`);
+    if (response.status === 200) {
+      dispatch({ type: "LOAD_SELLER_ORDERS", payload: response.data });
+    }
+  };
+
   useEffect(() => {
-    fetchOrders(username);
-  }, [username]);
+    if(username && role === 'ROLE_USER'){
+      fetchOrders(username);
+    } else if(username && role === 'ROLE_SELLER') {
+      fetchSellerOrders(username);
+    }
+  }, [username, role]);
+
+  
 
   return (
     <OrderContext.Provider
       value={{
         ...state,
         createOrder,
+        fetchSellerOrders,
       }}>
       {children}
     </OrderContext.Provider>

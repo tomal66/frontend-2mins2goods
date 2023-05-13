@@ -3,6 +3,7 @@ import { createContext, useContext, useEffect, useReducer, useState } from "reac
 import reducer from "../reducer/productreducer";
 import { useAuthContext } from "./auth_context";
 import useGeoLocation from "../helpers/useGeoLocation";
+import { useUserContext } from "./user_context";
 
 const AppContext = createContext();
 
@@ -26,14 +27,21 @@ const AppProvider = ({ children }) => {
     const [latitude, setLatitude] = useState('');
     const [longitude, setLongitude] = useState('');
     const location = useGeoLocation();
+    const { username } = useAuthContext(); // Get the username from AuthContext
+    const { user } = useUserContext(); // Get the user data from UserContext
+  
+  
 
     useEffect(() => {
-      if (location.loaded && !location.error) {
+      if (username && user) { // If user is logged in, get their saved location
+        setLatitude(user.address.latitude);
+        setLongitude(user.address.longitude);
+        console.log(user);
+      } else if (location.loaded && !location.error) { // If user is not logged in, get their current location
         setLatitude(location.coordinates.lat);
         setLongitude(location.coordinates.long);
-        console.log(latitude, longitude);
       }
-    }, [location, setLatitude, setLongitude]);
+    }, [location, username, user, setLatitude, setLongitude]);
 
 
 
@@ -131,6 +139,16 @@ const AppProvider = ({ children }) => {
           console.error("Error fetching image:", error);
         }
       };
+
+      const fetchProduct = async (productId) => {
+        try {
+          const response = await axios.get(`http://localhost:8080/api/product/${productId}`);
+          return response.data;
+        } catch (error) {
+          console.error("Error fetching product:", error);
+        }
+      };
+      
       
       useEffect(() => {
         if (latitude && longitude) {
@@ -140,7 +158,7 @@ const AppProvider = ({ children }) => {
     
 
     return (
-    <AppContext.Provider value={{...state, getSingleProduct, addProduct, getSellerProducts, fetchImage, deleteProduct, editProduct}}>
+    <AppContext.Provider value={{...state, getSingleProduct, addProduct, getSellerProducts, fetchImage, deleteProduct, editProduct, fetchProduct}}>
         {children}
     </AppContext.Provider>
     )
