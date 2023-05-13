@@ -13,12 +13,14 @@ import { Modal, Button } from '@mui/material';
 import { useUserContext } from '../context/user_context';
 
 const MyOrdersTable = () => {
-    const { fetchSellerOrders, sellerOrders, fetchOrderById, deleteOrderItem } = useOrderContext(); // change to use the order context
+    const { fetchSellerOrders, sellerOrders, fetchOrderById, updateOrderItem } = useOrderContext(); // change to use the order context
     const {username} = useAuthContext();
     const { fetchProduct } = useProductContext();
     const [orders, setOrders] = useState([]); // New state for processed orders data
     const [selectedOrder, setSelectedOrder] = useState(null);
     const [showModal, setShowModal] = useState(false); // State to control the visibility of the modal
+    const [showUpdateModal, setShowUpdateModal] = useState(false); // State to control the visibility of the update modal
+    const [selectedStatus, setSelectedStatus] = useState(""); // State to store the selected status
     const { fetchUserByUsername } = useUserContext();
   
     // Function to handle "View" button click
@@ -26,6 +28,44 @@ const MyOrdersTable = () => {
         setSelectedOrder(order);
         setShowModal(true);
     };
+
+    const handleStatusUpdate = async () => {
+        try {
+          // Call the updateOrderItem function with the selected order and the new status
+          const orderItemDto = {
+            itemId: selectedOrder.itemId,
+            quantity: selectedOrder.quantity,
+            orderId: selectedOrder.orderId,
+            productId: selectedOrder.productId,
+            status: selectedStatus,
+            deliveryMethod: selectedOrder.deliveryMethod
+          }
+          console.log(orderItemDto);
+          await updateOrderItem(orderItemDto); 
+          setShowUpdateModal(false);
+          Swal.fire({
+            title: 'Updated!',
+            text: 'The order status has been updated!',
+            icon: 'success',
+            confirmButtonText: 'Ok',
+            confirmButtonColor: '#E6400B'
+          });
+
+          // Reload orders after successful update
+          fetchSellerOrders(username);
+      
+        } catch (error) {
+          Swal.fire({
+            title: 'Failed!',
+            text: 'There was an issue updating the order status.',
+            icon: 'error',
+            confirmButtonText: 'Ok',
+            confirmButtonColor: '#E6400B'
+          });
+        }
+      };
+      
+      
 
     
     useEffect(()=>{
@@ -95,66 +135,13 @@ const MyOrdersTable = () => {
             />
             <FiEdit2
               className="icon edit-icon"
-              onClick={() => handleEdit(row.itemId)}
+              onClick={() => { setSelectedOrder(row); setShowUpdateModal(true); }}
             />
-            <FiTrash2 
-              className="icon delete-icon"
-              onClick={() => handleDelete(row.itemId)}
-              />
           </>
         ),
       },
     ], []);
 
-
-  
-    const handleDelete = (id) => {
-        // Swal.fire({
-        //   title: 'Are you sure?',
-        //   text: 'You will not be able to recover this product!',
-        //   icon: 'warning',
-        //   showCancelButton: true,
-        //   confirmButtonText: 'Yes, delete it!',
-        //   confirmButtonColor: '#d33',
-        //   cancelButtonText: 'No, keep it'
-        // }).then((result) => {
-        //   if (result.isConfirmed) {
-        //     deleteProduct(id)
-        //       .then(() => {
-        //         Swal.fire({
-        //           title: 'Deleted!',
-        //           text: 'Your product has been deleted!',
-        //           icon: 'success',
-        //           confirmButtonText: 'Ok',
-        //           confirmButtonColor: '#E6400B' // This will set the confirm button color to red
-        //         });
-        //         // Here you could also add any additional actions on success (like refreshing the product list)
-        //       })
-        //       .catch(() => {
-        //         Swal.fire({
-        //           title: 'Failed!',
-        //           text: 'There was an issue deleting your product.',
-        //           icon: 'error',
-        //           confirmButtonText: 'Ok',
-        //           confirmButtonColor: '#E6400B' // This will set the confirm button color to red
-        //         });
-        //         // Here you could also add any additional actions on failure
-        //       })
-        //   } else if (result.dismiss === Swal.DismissReason.cancel) {
-        //     Swal.fire({
-        //       title: 'Cancelled!',
-        //       text: 'Your product is safe.',
-        //       icon: 'success',
-        //       confirmButtonText: 'Ok',
-        //       confirmButtonColor: '#E6400B' // This will set the confirm button color to red
-        //     });
-        //   }
-        // })
-      };
-      
-      const handleEdit = (id) => {
-        nav(`/edit-product/${id}`);
-      };
 
     const customStyles = {
         header: {
@@ -202,7 +189,7 @@ const MyOrdersTable = () => {
             customStyles={customStyles}
           />
         </div>
-        {/* Modal component */}
+        {/* Modal component for View order*/}
         <Modal
             open={showModal}
             onClose={() => setShowModal(false)}
@@ -211,13 +198,12 @@ const MyOrdersTable = () => {
         >
             <ModalContainer>
                 {/* Existing code */}
+                
                 {selectedOrder && (
                 <div id="modal-description">
                     {/* Display the order information here */}
                     {/* Existing code */}
-                    <p>
-                    <strong>Order ID:</strong> {selectedOrder.orderId}
-                    </p>
+                    <h3>Order #{selectedOrder.orderId}</h3>
                     <p>
                     <strong>Status:</strong> {selectedOrder.status}
                     </p>
@@ -250,6 +236,44 @@ const MyOrdersTable = () => {
                 )}
             </ModalContainer>
         </Modal>
+
+        {/* {Modal for update status} */}
+        <Modal
+        open={showUpdateModal}
+        onClose={() => setShowUpdateModal(false)}
+        aria-labelledby="modal-title-update"
+        aria-describedby="modal-description-update"
+        >
+            <UpdateModalContainer>
+            {selectedOrder && (
+                <div id="modal-description-update">
+                <h3>Update Order Status</h3>
+                <p>
+                    <strong>Order ID:</strong> {selectedOrder.orderId}
+                </p>
+                <select value={selectedStatus} onChange={e => setSelectedStatus(e.target.value)}>
+                    <option value="">Select status</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Processing">Processing</option>
+                    {selectedOrder.deliveryMethod === "pickup" ? (
+                    <option value="Ready">Ready</option>
+                    ) : (
+                    <>
+                        <option value="Shipped">Shipped</option>
+                    </>
+                    )}
+                    <option value="Delivered">Delivered</option>
+                    <option value="Cancelled">Cancelled</option>
+                </select>
+                <button onClick={handleStatusUpdate}>Update Status</button>
+                </div>
+            )}
+            </UpdateModalContainer>
+
+        </Modal>
+
+
+
 
       </Wrapper>
     );
@@ -325,6 +349,41 @@ const ModalContainer = styled.div`
     font-weight: bold;
   }
 `;
+
+const UpdateModalContainer = styled(ModalContainer)`
+  select {
+    display: block;
+    width: 100%;
+    height: calc(2em + .75rem + 2px); // Increase height
+    padding: .375rem .75rem;
+    font-size: 1.2rem; // Increase font size
+    font-weight: 400;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: .25rem;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    margin-top: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  button {
+    background: #E6400B; // Theme orange
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+
+    &:hover {
+      background-color: #c53010; // Darken the theme orange on hover
+    }
+  }
+`;
+
 
 
 export default MyOrdersTable

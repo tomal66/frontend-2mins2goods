@@ -19,6 +19,16 @@ const orderReducer = (state, action) => {
         sellerOrders: action.payload,
       };
     }
+
+    if (action.type === "UPDATE_ORDER_ITEM") {
+      const updatedSellerOrders = state.sellerOrders.map((order) => 
+        order.id === action.payload.id ? action.payload : order
+      );
+      return {
+        ...state,
+        sellerOrders: updatedSellerOrders,
+      };
+    }
   
     return state;
   };

@@ -50,6 +50,17 @@ const OrderProvider = ({ children }) => {
     }
   };
 
+  const updateOrderItem = async (orderItemDto) => {
+    try {
+      const response = await axios.put('http://localhost:8080/api/orders/item', orderItemDto);
+      if (response.status === 200) {
+        dispatch({ type: "UPDATE_ORDER_ITEM", payload: response.data });
+      }
+    } catch (error) {
+      console.error('There was an error updating the order item:', error);
+    }
+  };
+
   useEffect(() => {
     if(username && role === 'ROLE_USER'){
       fetchOrders(username);
@@ -66,7 +77,7 @@ const OrderProvider = ({ children }) => {
         ...state,
         createOrder,
         fetchSellerOrders,
-        fetchOrderById
+        fetchOrderById, updateOrderItem
       }}>
       {children}
     </OrderContext.Provider>
