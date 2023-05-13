@@ -7,9 +7,11 @@ import FormatPrice from "./helpers/FormatPrice";
 import NoProduct from "./components/NoProduct";
 import { useState, useEffect } from "react";
 import Swal from "sweetalert2";
+import { useAuthContext } from "./context/auth_context";
 
 const Cart = () => {
   const { cart, clearCart, total_price, shipping_fee } = useCartContext();
+  const { username } = useAuthContext();
   const multipleSellers = new Set(cart.map(item => item.seller)).size > 1;
 
   const [deliveryOption, setDeliveryOption] = useState('pickup'); // default option
@@ -41,7 +43,21 @@ const Cart = () => {
   }
 
   const placeOrder = () => {
-    console.log("Checkout process started...");
+    const orderDTO = {
+      items: cart.map(item => ({
+        quantity: item.amount,
+        productId: item.productId
+      })),
+      deliveryMethod: deliveryOption,
+      // subtotal: total_price,
+      // platformFee: shipping_fee,
+      total: shipping_fee + total_price,
+      buyerUsername: username
+      // add other necessary order details, e.g., customer information
+    };
+  
+    // Here you would typically send this DTO to your server or another process
+    console.log(orderDTO);
   }
 
   return (
