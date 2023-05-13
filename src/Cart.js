@@ -8,12 +8,13 @@ import NoProduct from "./components/NoProduct";
 import { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import { useAuthContext } from "./context/auth_context";
+import { useOrderContext } from "./context/order_context";
 
 const Cart = () => {
   const { cart, clearCart, total_price, shipping_fee } = useCartContext();
   const { username } = useAuthContext();
   const multipleSellers = new Set(cart.map(item => item.seller)).size > 1;
-
+  const { createOrder } = useOrderContext();
   const [deliveryOption, setDeliveryOption] = useState('pickup'); // default option
 
   const handleDeliveryOptionChange = (e) => {
@@ -42,9 +43,9 @@ const Cart = () => {
     );
   }
 
-  const placeOrder = () => {
+  const placeOrder = async() => {
     const orderDTO = {
-      items: cart.map(item => ({
+      orderItems: cart.map(item => ({
         quantity: item.amount,
         productId: item.productId
       })),
@@ -55,8 +56,9 @@ const Cart = () => {
       buyerUsername: username
       // add other necessary order details, e.g., customer information
     };
-  
+    
     // Here you would typically send this DTO to your server or another process
+    await createOrder(orderDTO);
     console.log(orderDTO);
   }
 
