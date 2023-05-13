@@ -93,12 +93,6 @@ const SellerNav = () => {
               </NavLink>
             </li>
           )}
-          {/* <li>
-            <NavLink to="/cart" className="navbar-link cart-trolley--link">
-              <FiShoppingCart className="cart-trolley" />
-              <span className="cart-total--item"> {total_item} </span>
-            </NavLink>
-          </li> */}
           
         </ul>
 

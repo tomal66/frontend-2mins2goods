@@ -32,6 +32,7 @@ const Product = () => {
 }
 
 const Wrapper = styled.section`
+  min-height: 70vh;
   .grid-filter-column {
     grid-template-columns: 0.2fr 1fr;
   }

@@ -1,25 +1,12 @@
 import { createContext, useContext, useReducer, useEffect } from "react";
 import reducer from "../reducer/cartReducer";
+import axios from "axios";
+import { useAuthContext } from "./auth_context";
 
 const CartContext = createContext();
 
-const getLocalCartData = () => {
-  let localCartData = localStorage.getItem("2m2gcart");
-  if (!localCartData || localCartData.length === 0) {
-    return [];
-  } else {
-    try {
-      return JSON.parse(localCartData);
-    } catch (error) {
-      console.error("Error parsing cart data from localStorage", error);
-      return [];
-    }
-  }
-};
-
 const initialState = {
-  //cart: [],
-  cart: getLocalCartData(),
+  cart: [],
   total_item: "",
   total_price: "",
   shipping_fee: 50,
@@ -27,10 +14,51 @@ const initialState = {
 
 const CartProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
+  const{username} = useAuthContext();
 
-  const addToCart = (productId, amount, product) => {
-    dispatch({ type: "ADD_TO_CART", payload: { productId, amount, product } });
+
+  const addToCart = async (productId, amount, product) => {
+    try {
+      const response = await axios.post('http://localhost:8080/api/cartitem', {
+        productId: productId,
+        quantity: amount,
+        buyerUsername: username
+      });
+  
+      if (response.status === 201) {
+        const itemId = response.data.itemId;
+  
+        dispatch({ type: "ADD_TO_CART", payload: { itemId, productId, amount, product } });
+      }
+    } catch (error) {
+      console.error('There was an error adding the item to the cart:', error);
+    }
   };
+  
+  const fetchProductDetails = async (productId) => {
+    const response = await axios.get(`http://localhost:8080/api/product/${productId}`);
+    if (response.status === 200) {
+      return response.data;
+    } else {
+      throw new Error('Failed to fetch product details');
+    }
+  };
+
+  const fetchCartItems = async (username) => {
+    const response = await axios.get(`http://localhost:8080/api/cartitem/buyer/${username}`);
+    if (response.status === 200) {
+      const cartItems = await Promise.all(response.data.map(async (item) => {
+        const product = await fetchProductDetails(item.productId);
+        return {
+          ...item,
+          product,
+        };
+      }));
+      dispatch({ type: "LOAD_CART_ITEMS", payload: cartItems });
+    }
+  };
+  
+  
 
   // increment and decrement the product
 
@@ -60,8 +88,13 @@ const CartProvider = ({ children }) => {
     // dispatch({ type: "CART_TOTAL_PRICE" });
     dispatch({ type: "CART_ITEM_PRICE_TOTAL" });
 
-    localStorage.setItem("2m2gcart", JSON.stringify(state.cart));
+    //localStorage.setItem("2m2gcart", JSON.stringify(state.cart));
   }, [state.cart]);
+
+  useEffect(() => {
+    fetchCartItems(username); // replace 'testUser' with actual username
+  }, [username]);
+  
 
   return (
     <CartContext.Provider

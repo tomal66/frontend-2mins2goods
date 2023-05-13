@@ -13,8 +13,8 @@ const FeaturedProducts = () => {
     return (
       <Wrapper className="section">
         <div className="container">
-          <div className="intro-data">Check Now!</div>
-          <div className="common-heading">Featured Products</div>
+          <div className="intro-data"></div>
+          <div className="common-heading">Latest Products</div>
           <div className="grid grid-three-column">
             {featureProducts.map((curElem) => {
               return <ProductCard key={curElem.id} {...curElem} />;

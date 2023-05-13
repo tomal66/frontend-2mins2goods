@@ -19,6 +19,10 @@ const Cart = () => {
     );
   }
 
+  const checkout = () => {
+    console.log("Checkout process started...");
+  }
+
   return (
     <Wrapper>
       <div className="container">
@@ -67,7 +71,11 @@ const Cart = () => {
                 <FormatPrice price={shipping_fee + total_price} />
               </p>
             </div>
+            <Button className="btn" onClick={checkout}>
+            Checkout
+          </Button>
           </div>
+          
         </div>
       </div>
     </Wrapper>
@@ -248,6 +256,28 @@ const Wrapper = styled.section`
       text-transform: capitalize;
       justify-content: flex-start;
       align-items: flex-start;
+
+      .btn2 {
+      margin: 2rem 0;
+      background-color: rgb(0 0 0 / 0%);
+      border: 0.1rem solid #E6400B;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #E6400B;
+
+      &:hover {
+        background-color: #E6400B;
+      }
+
+      &:hover a {
+        color: #fff;
+      }
+      a {
+        color: #E6400B;
+        font-size: 1.4rem;
+      }
+    }
 
       .order-total--subdata {
         width: 100%;

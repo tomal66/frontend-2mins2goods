@@ -1,17 +1,20 @@
 import { useState } from "react";
 import styled from "styled-components";
-import { FaCheck } from "react-icons/fa";
 import CartAmountToggle from "./CartAmountToggle";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { Button } from "../styles/Button";
 import { useCartContext } from "../context/cartcontext";
+import { useAuthContext } from "../context/auth_context";
+import Swal from "sweetalert2";
 
 const AddToCart = ({ product }) => {
-  const { addToCart } = useCartContext();
+  const { addToCart, cart } = useCartContext();
+  const { isAuthenticated } = useAuthContext(); 
 
   const { productId, quantity } = product;
 
   const [amount, setAmount] = useState(1);
+  const nav = useNavigate();
 
   const setDecrease = () => {
     amount > 1 ? setAmount(amount - 1) : setAmount(1);
@@ -19,6 +22,53 @@ const AddToCart = ({ product }) => {
 
   const setIncrease = () => {
     amount < quantity ? setAmount(amount + 1) : setAmount(quantity);
+  };
+
+  const handleAddToCart = async (e) => {
+    e.preventDefault();
+    if (isAuthenticated) {
+      try{
+        addToCart(productId, amount, product);
+        console.log(cart);
+        Swal.fire({
+          title: 'Added to Cart',
+          text: 'Your item has been added to the cart.',
+          icon: 'success',
+          showCancelButton: true,
+          confirmButtonColor: '#E6400B',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'View Cart',
+          cancelButtonText: 'Continue Shopping'
+          }).then((result) => {
+              if (result.isConfirmed) {
+                  nav('/cart'); // redirect to cart page
+              } else if (result.dismiss === Swal.DismissReason.cancel) {
+                  nav('/products'); // redirect to products page
+              }
+        });
+      } catch(error){
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: 'There was an error adding the item to the cart. Please try again.',
+        });
+      }
+    
+    } else {
+      Swal.fire({
+        title: 'Please login first!',
+        text: 'You need to login before adding items to the cart.',
+        icon: 'warning',
+        confirmButtonText: 'Go to Login',
+        confirmButtonColor: '#E6400B',
+        cancelButtonText: 'Cancel',
+        showCancelButton: true,
+      }).then((result) => {
+        if (result.isConfirmed) {
+          nav("/login"); // redirect to login page
+        }
+      });
+    }
   };
 
   return (
@@ -30,10 +80,7 @@ const AddToCart = ({ product }) => {
         setDecrease={setDecrease}
         setIncrease={setIncrease}
       />
-
-      <NavLink to="/cart" onClick={() => addToCart(productId, amount, product)}>
-        <Button className="btn">Add To Cart</Button>
-      </NavLink>
+      <Button className="btn" onClick={handleAddToCart}>Add To Cart</Button>
     </Wrapper>
   );
 };

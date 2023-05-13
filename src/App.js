@@ -21,6 +21,7 @@ import Orders from './Orders'
 import SellerRegister from './SellerRegister';
 import AddProduct from './AddProduct';
 import EditProduct from './EditProduct';
+import Checkout from './Checkout';
 
 
 function App() {
@@ -65,13 +66,18 @@ function App() {
           <Route path="/" element={<Home/>}/>
           
           <Route path="/singleproduct/:id" element={<SingleProduct/>}/>
-          <Route path="/cart" element={<Cart/>}/>
+          
           <Route path="/products" element={<Product/>}/>
           <Route path="/login" element={<Login/>}/>
           <Route path="/register" element={<Register/>}/>
           <Route path="/seller-register" element={<SellerRegister/>}/>
           <Route path="/unauthorized" element={<Unauthorized/>}/>
           <Route path="*" element={<ErrorPage/>}/>
+
+          <Route element={<RequireAuth allowedRole={"ROLE_USER"} />}>
+            <Route path="/cart" element={<Cart/>}/>
+            <Route path="/checkout" element={<Checkout/>}/>
+          </Route>
 
           <Route element={<RequireAuth allowedRole={"ROLE_SELLER"} />}>
             <Route path="/seller-dashboard" element={<SellerDashboard />} />

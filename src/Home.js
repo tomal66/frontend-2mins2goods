@@ -6,11 +6,13 @@ import FeaturedProducts from './components/FeaturedProducts';
 import { useEffect } from 'react';
 import { useAuthContext } from './context/auth_context';
 import { useNavigate } from 'react-router-dom';
+import useGeoLocation from './helpers/useGeoLocation';
 
 
 const Home = () => {
   const { isAuthenticated, role } = useAuthContext();
   const nav = useNavigate();
+  const location = useGeoLocation();
   
   useEffect(() => {
     document.title = "2mins2goods";
@@ -31,6 +33,16 @@ const Home = () => {
 
     }
   }, [isAuthenticated, nav]);
+
+  // Use the location data
+  useEffect(() => {
+    if (location.loaded) {
+      console.log("Latitude: ", location.coordinates.lat);
+      console.log("Longitude: ", location.coordinates.long);
+    } else if (location.error) {
+      console.log("Location error: ", location.error.message);
+    }
+  }, [location]);
 
   const data = {
     name: "2mins2goods",

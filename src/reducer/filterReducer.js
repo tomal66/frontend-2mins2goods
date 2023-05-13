@@ -49,11 +49,11 @@ const filterReducer = (state, action) => {
         }
 
         if (sorting_value === "a-z") {
-          return a.name.localeCompare(b.name);
+          return a.title.localeCompare(b.title);
         }
 
         if (sorting_value === "z-a") {
-          return b.name.localeCompare(a.name);
+          return b.title.localeCompare(a.title);
         }
       };
 
@@ -79,29 +79,17 @@ const filterReducer = (state, action) => {
       let { all_products } = state;
       let tempFilterProduct = [...all_products];
 
-      const { text, category, company, color, price } = state.filters;
+      const { text, category, price } = state.filters;
 
       if (text) {
         tempFilterProduct = tempFilterProduct.filter((curElem) => {
-          return curElem.name.toLowerCase().includes(text);
+          return curElem.title.toLowerCase().includes(text);
         });
       }
 
       if (category !== "all") {
         tempFilterProduct = tempFilterProduct.filter(
           (curElem) => curElem.category === category
-        );
-      }
-
-      if (company !== "all") {
-        tempFilterProduct = tempFilterProduct.filter(
-          (curElem) => curElem.company.toLowerCase() === company.toLowerCase()
-        );
-      }
-
-      if (color !== "all") {
-        tempFilterProduct = tempFilterProduct.filter((curElem) =>
-          curElem.colors.includes(color)
         );
       }
 
@@ -129,8 +117,6 @@ const filterReducer = (state, action) => {
           ...state.filters,
           text: "",
           category: "all",
-          company: "all",
-          color: "all",
           maxPrice: MP,
           price: state.filters.maxPrice,
           minPrice: 0,

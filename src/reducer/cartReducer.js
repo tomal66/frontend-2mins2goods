@@ -1,6 +1,6 @@
 const cartReducer = (state, action) => {
   if (action.type === "ADD_TO_CART") {
-    let { productId, amount, product } = action.payload;
+    let { itemId, productId, amount, product } = action.payload;
 
     // tackle the existing product
 
@@ -30,7 +30,8 @@ const cartReducer = (state, action) => {
       };
     } else {
       let cartProduct = {
-        productId: productId,
+        itemId,
+        productId,
         title: product.title,
         amount,
         image: product.images[0],
@@ -44,6 +45,21 @@ const cartReducer = (state, action) => {
       };
     }
   }
+
+  if (action.type === "LOAD_CART_ITEMS") {
+    return {
+      ...state,
+      cart: action.payload.map(item => ({
+        itemId: item.itemId,
+        productId: item.productId,
+        title: item.product.title,
+        amount: item.quantity,
+        image: item.product.images[0],
+        price: item.product.price,
+        max: item.product.quantity,
+      })),
+    };
+  }  
 
   // to set the increment and decrement
   if (action.type === "SET_DECREMENT") {

@@ -7,12 +7,12 @@ import TextField from '@mui/material/TextField';
 
 const FilterSection = () => {
   const {
-    filters: { text, category, color, price, maxPrice, minPrice },
+    filters: { text, category, price, maxPrice, minPrice },
     updateFilterValue,
     all_products,
     clearFilters,
   } = useFilterContext();
-
+ 
   // get the unique values of each property
   const getUniqueData = (data, attr) => {
     let newVal = data.map((curElem) => {
@@ -70,59 +70,7 @@ const FilterSection = () => {
         </div>
       </div>
 
-      <div className="filter-company">
-        <h3>Company</h3>
 
-        <form action="#">
-          <select
-            name="company"
-            id="company"
-            className="filter-company--select"
-            onClick={updateFilterValue}>
-            {companyData.map((curElem, index) => {
-              return (
-                <option key={index} value={curElem} name="company">
-                  {curElem}
-                </option>
-              );
-            })}
-          </select>
-        </form>
-      </div>
-
-      <div className="filter-colors colors">
-        <h3>Colors</h3>
-
-        <div className="filter-color-style">
-          {colorsData.map((curColor, index) => {
-            if (curColor === "all") {
-              return (
-                <button
-                  key={index}
-                  type="button"
-                  value={curColor}
-                  name="color"
-                  className="color-all--style"
-                  onClick={updateFilterValue}>
-                  all
-                </button>
-              );
-            }
-            return (
-              <button
-                key={index}
-                type="button"
-                value={curColor}
-                name="color"
-                style={{ backgroundColor: curColor }}
-                className={color === curColor ? "btnStyle active" : "btnStyle"}
-                onClick={updateFilterValue}>
-                {color === curColor ? <FaCheck className="checkStyle" /> : null}
-              </button>
-            );
-          })}
-        </div>
-      </div>
 
       <div className="filter_price">
         <h3>Price</h3>

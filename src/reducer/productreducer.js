@@ -8,9 +8,12 @@ const ProductReducer = (state, action) => {
         };
   
       case "SET_API_DATA":
-        const featureData = action.payload.filter((curElem) => {
-          return curElem.featured === true;
+        const sortedData = action.payload.sort((a, b) => {
+          return b.productId - a.productId; // sort in descending order of productId
         });
+      
+        const featureData = sortedData.slice(0, 3); // take the first three items
+      
   
         return {
           ...state,
