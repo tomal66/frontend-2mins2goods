@@ -9,7 +9,7 @@ const initialState = {
   cart: [],
   total_item: "",
   total_price: "",
-  shipping_fee: 50,
+  shipping_fee: 20,
 };
 
 const CartProvider = ({ children }) => {
@@ -63,13 +63,63 @@ const CartProvider = ({ children }) => {
 
   // increment and decrement the product
 
-  const setDecrease = (id) => {
-    dispatch({ type: "SET_DECREMENT", payload: id });
-  };
+  // const increment = async (itemId, productId, amount) => {
+  //   try {
+  //     const updatedCartItem = {
+  //       itemId,
+  //       amount: amount + 1,
+  //       productId,
+  //       buyerUsername: state.username
+  //     };
+  //     const response = await axios.put(`http://localhost:8080/api/cartitem`, updatedCartItem);
+  //     if (response.status === 200) {
+  //       console.log("Incremented quantity successfully");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error incrementing item quantity:", error);
+  //   }
+  // };
+  
+  // const decrement = async (itemId, productId, amount) => {
+  //   try {
+  //     const updatedCartItem = {
+  //       itemId,
+  //       amount: amount - 1,
+  //       productId,
+  //       buyerUsername: state.username
+  //     };
+  //     const response = await axios.put(`http://localhost:8080/api/cartitem`, updatedCartItem);
+  //     if (response.status === 200) {
+  //       console.log("Decremented quantity successfully");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error decrementing item quantity:", error);
+  //   }
+  // };
+  
 
-  const setIncrement = (id) => {
-    dispatch({ type: "SET_INCREMENT", payload: id });
-  };
+  // const setDecrease = async (itemId, productId, amount) => {
+  //   if (amount > 1) {
+  //     try {
+  //       await decrement(itemId, productId, amount);
+  //       dispatch({ type: "SET_DECREMENT", payload: itemId });
+  //     } catch (error) {
+  //       console.error("Error decrementing item quantity:", error);
+  //     }
+  //   }
+  // };
+  
+  // const setIncrement = async (itemId, productId, amount, max) => {
+  //   if (amount < max) {
+  //     try {
+  //       await increment(itemId, productId, amount);
+  //       dispatch({ type: "SET_INCREMENT", payload: itemId });
+  //     } catch (error) {
+  //       console.error("Error incrementing item quantity:", error);
+  //     }
+  //   }
+  // };
+  
 
   // to remove the individual item from cart
   const removeItem = async (itemId) => {
@@ -115,8 +165,6 @@ const CartProvider = ({ children }) => {
         addToCart,
         removeItem,
         clearCart,
-        setDecrease,
-        setIncrement,
       }}>
       {children}
     </CartContext.Provider>

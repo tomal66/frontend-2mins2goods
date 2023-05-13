@@ -6,7 +6,7 @@ import { useCartContext } from "../context/cartcontext";
 import ImageCell from "./ImageCell";
 import { useNavigate } from "react-router-dom";
 
-const CartItem = ({ itemId, productId, title, image, price, amount }) => {
+const CartItem = ({ itemId, productId, title, image, price, amount, max }) => {
   const { removeItem, setDecrease, setIncrement } = useCartContext();
   const nav = useNavigate();
 
@@ -34,8 +34,8 @@ const CartItem = ({ itemId, productId, title, image, price, amount }) => {
       {/* Quantity  */}
       <CartAmountToggle
         amount={amount}
-        setDecrease={() => setDecrease(productId)}
-        setIncrease={() => setIncrement(productId)}
+        //setDecrease={() => setDecrease(itemId, productId, amount)}
+        //setIncrease={() => setIncrement(itemId, productId, amount, max)}
       />
 
       {/* //Subtotal */}
