@@ -42,8 +42,19 @@ export const UserProvider = ({ children }) => {
         dispatch({ type: 'CLEAR_USER' });
     };
 
+    // Fetch user by username
+    const fetchUserByUsername = async (username) => {
+        try {
+        const response = await axios.get(`http://localhost:8080/api/user/${username}`);
+        const user = response.data;
+        return user;
+        } catch (error) {
+        console.error('Error fetching user by username:', error);
+        }
+    };
+
     return (
-        <UserContext.Provider value={{ ...state, setUser, clearUser }}>
+        <UserContext.Provider value={{ ...state, setUser, clearUser, fetchUserByUsername }}>
             {children}
         </UserContext.Provider>
     );

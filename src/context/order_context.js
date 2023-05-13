@@ -39,6 +39,17 @@ const OrderProvider = ({ children }) => {
     }
   };
 
+  const fetchOrderById = async (orderId) => {
+    try {
+      const response = await axios.get(`http://localhost:8080/api/orders/${orderId}`);
+      if (response.status === 200) {
+        return response.data; // Return the fetched order
+      }
+    } catch (error) {
+      console.error("There was an error fetching the order:", error);
+    }
+  };
+
   useEffect(() => {
     if(username && role === 'ROLE_USER'){
       fetchOrders(username);
@@ -55,6 +66,7 @@ const OrderProvider = ({ children }) => {
         ...state,
         createOrder,
         fetchSellerOrders,
+        fetchOrderById
       }}>
       {children}
     </OrderContext.Provider>
