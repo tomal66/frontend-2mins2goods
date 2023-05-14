@@ -49,7 +49,8 @@ const Cart = () => {
     const orderDTO = {
       orderItems: cart.map(item => ({
         quantity: item.amount,
-        productId: item.productId
+        productId: item.productId,
+        status: 'Pending',
       })),
       deliveryMethod: deliveryOption,
       // subtotal: total_price,

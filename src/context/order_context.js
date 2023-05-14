@@ -15,6 +15,7 @@ const OrderProvider = ({ children }) => {
   const { username, role } = useAuthContext();
 
   const createOrder = async (orderDto) => {
+    console.log(orderDto);
     try {
       const response = await axios.post('http://localhost:8080/api/orders', orderDto);
       if (response.status === 201) {
@@ -52,14 +53,22 @@ const OrderProvider = ({ children }) => {
 
   const updateOrderItem = async (orderItemDto) => {
     try {
-      const response = await axios.put('http://localhost:8080/api/orders/item', orderItemDto);
-      if (response.status === 200) {
-        dispatch({ type: "UPDATE_ORDER_ITEM", payload: response.data });
-      }
+      console.log('Sending request:', orderItemDto);
+      axios.put('http://localhost:8080/api/orders/item', orderItemDto)
+        .then(response => {
+          console.log('Response:', response);
+          if (response.status === 200) {
+            dispatch({ type: "UPDATE_ORDER_ITEM", payload: response.data });
+          }
+        })
+        .catch(error => {
+          console.error('Error from axios:', error);
+        });
     } catch (error) {
       console.error('There was an error updating the order item:', error);
     }
-  };
+};
+
 
   useEffect(() => {
     if(username && role === 'ROLE_USER'){

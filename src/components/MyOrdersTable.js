@@ -40,7 +40,6 @@ const MyOrdersTable = () => {
             status: selectedStatus,
             deliveryMethod: selectedOrder.deliveryMethod
           }
-          console.log(orderItemDto);
           await updateOrderItem(orderItemDto); 
           setShowUpdateModal(false);
           Swal.fire({
