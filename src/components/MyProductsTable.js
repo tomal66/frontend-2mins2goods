@@ -117,34 +117,39 @@ const MyProductsTable = () => {
     };
 
     const customStyles = {
-        header: {
-          style: {
-            backgroundColor: '#f5f5f5',
-            fontSize: '2rem', // Update text size for table headers
-            fontWeight: 'bold',
-          },
+      header: {
+        style: {
+          backgroundColor: '#f5f5f5',
+          fontSize: '2rem', // Update text size for table headers
+          fontWeight: 'bold',
         },
-        headCells: {
-          style: {
-            borderBottom: '1px solid #e0e0e0',
-            fontSize: '1.5rem',
-            fontWeight: 'bold'
-          },
+      },
+      headCells: {
+        style: {
+          borderBottom: '1px solid #e0e0e0',
+          fontSize: '1.5rem',
+          fontWeight: 'bold'
         },
-        cells: {
-          style: {
-            fontSize: '1.5rem'
-          },
+      },
+      cells: {
+        style: {
+          fontSize: '1.5rem',
+          width: '150px', // Set a fixed width for the cells
+          maxWidth: '150px', // Set a maximum width for the cells
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          whiteSpace: 'nowrap',
         },
-        rows: {
-          style: {
-            minHeight: '60px', // override the row height
-            '&:hover': {
-                backgroundColor: '#f5f5f5',
-              },
-          },
+      },
+      rows: {
+        style: {
+          minHeight: '60px', // override the row height
+          '&:hover': {
+              backgroundColor: '#f5f5f5',
+            },
         },
-      };
+      },
+    };
   
     return (
       <Wrapper>

@@ -22,6 +22,7 @@ import SellerRegister from './SellerRegister';
 import AddProduct from './AddProduct';
 import EditProduct from './EditProduct';
 import Checkout from './Checkout';
+import UserOrders from './UserOrders';
 
 
 function App() {
@@ -77,6 +78,7 @@ function App() {
           <Route element={<RequireAuth allowedRole={"ROLE_USER"} />}>
             <Route path="/cart" element={<Cart/>}/>
             <Route path="/checkout" element={<Checkout/>}/>
+            <Route path="/myOrders" element={<UserOrders/>}/>
           </Route>
 
           <Route element={<RequireAuth allowedRole={"ROLE_SELLER"} />}>
