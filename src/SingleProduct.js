@@ -11,6 +11,7 @@ import { TbTruckDelivery, TbReplace } from "react-icons/tb";
 import Star from "./components/Star";
 import AddToCart from "./components/AddToCart";
 import Loading from "./styles/Loading";
+import axios from "axios";
 
 const API = "http://localhost:8080/api/product";
 
@@ -28,12 +29,39 @@ const SingleProduct = () => {
     quantity,
     category,
     sellerUsername,
-    stars,
-    reviews,
     images,
   } = singleProduct;
 
   const [imageUrls, setImageUrls] = useState([]);
+  const [averageRating, setAverageRating] = useState(0);
+  const [totalReviews, setTotalReviews] = useState(0);
+  const [reviews, setReviews] = useState([]);
+
+
+  async function fetchProductReviewData(productId) {
+    try {
+      // Fetch average rating
+      const averageRatingResponse = await axios.get(`http://localhost:8080/api/reviews/averageRating/${productId}`);
+      const averageRating = averageRatingResponse.data || 0;
+  
+      // Fetch total reviews
+      const totalReviewsResponse = await axios.get(`http://localhost:8080/api/reviews/totalReviews/${productId}`);
+      const totalReviews = totalReviewsResponse.data || 0;
+  
+      // Fetch reviews
+      const reviewsResponse = await axios.get(`http://localhost:8080/api/reviews/product/${productId}`);
+      const reviews = reviewsResponse.data || [];
+  
+      // Update state
+      setAverageRating(averageRating);
+      setTotalReviews(totalReviews);
+      setReviews(reviews);
+      console.log(productId);
+      console.log(reviews);
+    } catch (error) {
+      console.error("Error fetching product review data:", error);
+    }
+  }
 
   const fetchImageUrls = async (imageIds) => {
     try {
@@ -41,7 +69,6 @@ const SingleProduct = () => {
         return await fetchImage(imageId);
       }));
       setImageUrls(urls);
-      console.log(urls);
     } catch (error) {
       console.error("Error fetching image URLs:", error);
     }
@@ -50,6 +77,13 @@ const SingleProduct = () => {
   useEffect(() => {
     getSingleProduct(`${API}/${id}`);
   }, []);
+
+  
+  useEffect(() => {
+    if (singleProduct && singleProduct.productId) {
+        fetchProductReviewData(singleProduct.productId);
+    }
+  }, [singleProduct]);
 
   useEffect(() => {
     if (images) {
@@ -75,7 +109,7 @@ const SingleProduct = () => {
           {/* product dAta  */}
           <div className="product-data">
             <h2>{title}</h2>
-            <Star stars={stars} reviews={reviews} />
+            <Star stars={averageRating} reviews={totalReviews} />
 
             <p className="product-data-price">
               Price: <FormatPrice price={price} />

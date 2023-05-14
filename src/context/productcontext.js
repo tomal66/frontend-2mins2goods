@@ -148,6 +148,16 @@ const AppProvider = ({ children }) => {
           console.error("Error fetching product:", error);
         }
       };
+
+      const addReview = async (review) => {
+        try {
+            const response = await axios.post('http://localhost:8080/api/reviews', review);
+            console.log(response.data);
+        } catch (error) {
+            console.error('Error creating review', error);
+        }
+    };
+    
       
       
       useEffect(() => {
@@ -158,7 +168,7 @@ const AppProvider = ({ children }) => {
     
 
     return (
-    <AppContext.Provider value={{...state, getSingleProduct, addProduct, getSellerProducts, fetchImage, deleteProduct, editProduct, fetchProduct}}>
+    <AppContext.Provider value={{...state, getSingleProduct, addProduct, getSellerProducts, fetchImage, deleteProduct, editProduct, fetchProduct, addReview}}>
         {children}
     </AppContext.Provider>
     )

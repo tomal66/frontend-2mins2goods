@@ -132,7 +132,7 @@ const MyOrdersTable = () => {
               className="icon edit-icon"
               onClick={() => handleView(row)}
             />
-            {row.status !== "cancelled" && (<FiEdit2
+            {(row.status !== "cancelled" && row.status !== "Delivered") && (<FiEdit2
               className="icon edit-icon"
               onClick={() => { setSelectedOrder(row); setShowUpdateModal(true); }}
             />)}

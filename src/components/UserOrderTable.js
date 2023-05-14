@@ -15,13 +15,43 @@ import { TiCancel }from 'react-icons/ti'
 const UserOrderTable = () => {
     const { fetchOrders, userOrders, fetchOrderById, cancelOrderItem } = useOrderContext(); // change to use the order context
     const {username} = useAuthContext();
-    const { fetchProduct } = useProductContext();
+    const { fetchProduct, addReview } = useProductContext();
     const [orders, setOrders] = useState([]); // New state for processed orders data
     const [selectedOrder, setSelectedOrder] = useState(null);
     const [showModal, setShowModal] = useState(false); // State to control the visibility of the modal
     const [showUpdateModal, setShowUpdateModal] = useState(false); // State to control the visibility of the update modal
     const [selectedStatus, setSelectedStatus] = useState(""); // State to store the selected status
     const { fetchUserByUsername } = useUserContext();
+    const [showReviewModal, setShowReviewModal] = useState(false);
+
+    const [review, setReview] = useState({
+    reviewId: null,
+    comment: "",
+    rating: 0,
+    productId: null,
+    username: ""
+    });
+
+    const handleReview = (order) => {
+    setReview({...review, productId: order.productId, username: username});
+    setShowReviewModal(true);
+    };
+
+    const submitReview = async (e) => {
+        e.preventDefault();
+        console.log(review);
+        await addReview(review);
+        setReview({
+          reviewId: null,
+          comment: "",
+          rating: 0,
+          productId: null,
+          username: ""
+        });
+        setShowReviewModal(false);
+      };
+      
+
   
     // Function to handle "View" button click
     const handleView = (order) => {
@@ -36,6 +66,7 @@ const UserOrderTable = () => {
           icon: 'warning',
           showCancelButton: true,
           confirmButtonText: 'Yes, cancel it!',
+          confirmButtonColor: '#FF0000',
           cancelButtonText: 'No, keep it'
         });
     
@@ -126,7 +157,7 @@ const UserOrderTable = () => {
                 {row.status === "Delivered" && (
                 <AiFillStar
                     className="icon edit-icon"
-                    onClick={() => handleView(row)}
+                    onClick={() => handleReview(row)}
                 />
                 )}
           </>
@@ -250,6 +281,30 @@ const UserOrderTable = () => {
                 )}
             </ModalContainer>
         </Modal>
+
+        {/* Review Modal */}
+        <Modal
+            open={showReviewModal}
+            onClose={() => setShowReviewModal(false)}
+            aria-labelledby="review-modal-title"
+            aria-describedby="review-modal-description"
+        >
+            <ModalContainer>
+                <h3 id="review-modal-title">Write a review</h3>
+                <form id="review-modal-description" className="review-form" onSubmit={submitReview}>
+                    <label className="review-form-field">
+                        Rating: 
+                        <input type="number" min="1" max="5" value={review.rating} onChange={(e) => setReview({...review, rating: parseInt(e.target.value)})} required />
+                    </label>
+                    <label className="review-form-field">
+                        Comment: 
+                        <textarea value={review.comment} onChange={(e) => setReview({...review, comment: e.target.value})} required />
+                    </label>
+                    <input type="submit" value="Submit Review" className="review-form-submit" />
+                </form>
+            </ModalContainer>
+        </Modal>
+        
       </Wrapper>
     );
 }
@@ -323,41 +378,61 @@ const ModalContainer = styled.div`
   p strong {
     font-weight: bold;
   }
+
+  .review-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.review-form-field {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  font-size: 1.5rem;
+}
+
+
+.review-form-field input,
+.review-form-field textarea {
+  width: 300px; /* Adjust this value to fit your design */
+  resize: vertical; /* This allows the textarea to be resized vertically only */
+  padding: 2%;
+  font-size: 2rem;
+  margin-top: 0.5rem;
+}
+
+.review-form-field textarea {
+  min-height: 100px;
+  text-transform: none;
+}
+
+
+.review-form-field input:focus,
+.review-form-field textarea:focus {
+  border-color: #E6400B;
+  outline: none; /* Remove the default browser outline */
+}
+
+
+.review-form-submit {
+  background: #E6400B;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+  margin: 0 auto; 
+}
+
+.review-form-submit:hover {
+  background-color: #c53010;
+}
+
 `;
 
-const UpdateModalContainer = styled(ModalContainer)`
-  select {
-    display: block;
-    width: 100%;
-    height: calc(2em + .75rem + 2px); // Increase height
-    padding: .375rem .75rem;
-    font-size: 1.2rem; // Increase font size
-    font-weight: 400;
-    line-height: 1.5;
-    color: #495057;
-    background-color: #fff;
-    background-clip: padding-box;
-    border: 1px solid #ced4da;
-    border-radius: .25rem;
-    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
-    margin-top: 1rem;
-    margin-bottom: 2rem;
-  }
-
-  button {
-    background: #E6400B; // Theme orange
-    color: #fff;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s ease-in-out;
-
-    &:hover {
-      background-color: #c53010; // Darken the theme orange on hover
-    }
-  }
-`;
 
 
 

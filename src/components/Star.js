@@ -23,9 +23,10 @@ const Star = ({ stars, reviews }) => {
     <Wrapper>
       <div className="icon-style">
         {ratingStar}
-        <p>({reviews} customer reviews)</p>
+        <p>({reviews} {reviews > 1 ? "reviews" : "review"})</p>
       </div>
     </Wrapper>
+
   );
 };
 
