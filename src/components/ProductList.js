@@ -4,6 +4,7 @@ import GridView from "./GridView";
 import ListView from "./ListView";
 import NoProduct from "./NoProduct"
 import { Pagination } from "@mui/material";
+import { useLocation } from "react-router-dom";
 
 const ProductList = () => { 
   const { filter_products, grid_view } = useFilterContext();
@@ -13,6 +14,7 @@ const ProductList = () => {
   const firstProductIndex = lastProductIndex-productsPerPage;
   const currentProducts = filter_products.slice(firstProductIndex, lastProductIndex);
 
+  
   useEffect(() => {
     console.log(filter_products);
   }, []);

@@ -50,8 +50,8 @@ const Wrapper = styled.section`
     /* order: 2; */
 
     img {
-      max-width: 100%;
-      max-height: 100%;
+      width: 100%;
+      height: 70px;
       background-size: cover;
       object-fit: contain;
       cursor: pointer;

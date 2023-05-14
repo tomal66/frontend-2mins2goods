@@ -11,6 +11,8 @@ const UserTable = () => {
   const [showModal, setShowModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
+  const token = localStorage.getItem('accessToken');
+
   useEffect(() => {
     fetchUsers();
   }, []);

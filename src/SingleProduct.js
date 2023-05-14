@@ -16,6 +16,7 @@ import axios from "axios";
 import { Modal } from "@mui/material";
 import {BsBoxSeamFill} from 'react-icons/bs'
 import Review from "./components/Review";
+import { useAuthContext } from "./context/auth_context";
 
 const API = "http://localhost:8080/api/product";
 
@@ -24,7 +25,7 @@ const SingleProduct = () => {
     useProductContext();
 
   const { id } = useParams();
-
+  const { role } = useAuthContext();
   const {
     productId,
     title,
@@ -162,7 +163,7 @@ const SingleProduct = () => {
               </p>
             </div>
             <hr />
-            {quantity > 0 && <AddToCart product={singleProduct} />}
+            {role !== 'ROLE_SELLER' && role !== 'ROLE_ADMIN' && quantity > 0 && <AddToCart product={singleProduct} />}
           </div>
         </div>
 

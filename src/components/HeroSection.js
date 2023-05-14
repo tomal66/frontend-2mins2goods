@@ -54,6 +54,7 @@ const Wrapper = styled.section`
 
     .intro-data {
       margin-bottom: 0;
+      color: #E6400B;
     }
   }
 

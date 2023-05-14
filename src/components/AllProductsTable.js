@@ -1,5 +1,5 @@
-import React, {useMemo, useEffect} from 'react'
-import { useProductContext } from '../context/productcontext';
+import React, {useMemo, useEffect, useState} from 'react'
+import { AiFillEye} from 'react-icons/ai'
 import DataTable from 'react-data-table-component'
 import styled from 'styled-components'
 import { FiEdit2, FiTrash2 } from 'react-icons/fi';
@@ -7,18 +7,34 @@ import { useAuthContext } from '../context/auth_context';
 import ImageCell from './ImageCell';
 import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
-import { AiFillEye} from 'react-icons/ai'
+import axios from 'axios';
 
-const MyProductsTable = () => {
-    const { getSellerProducts, sellerProducts, deleteProduct } = useProductContext();
-    const {username} = useAuthContext();
-    useEffect(()=>{
-      getSellerProducts(username);
-  },[])
+const AllProductsTable = () => {
+
+    const [products, setProducts] = useState([]); // Initialize state for products
+    const [search, setSearch] = useState(""); // Add this line
+
+    useEffect(() => {
+        axios.get('http://localhost:8080/api/product/all')
+          .then(response => {
+            setProducts(response.data); // Set the products data
+          })
+          .catch(error => {
+            console.error('Error:', error);
+          });
+      }, []);
+
+    // Filter products based on search
+    const filteredProducts = products.filter(
+        product =>
+        product.title.toLowerCase().includes(search.toLowerCase()) ||
+        product.category.toLowerCase().includes(search.toLowerCase())
+    );
 
   const nav = useNavigate();
-
-    const products = sellerProducts;
+  const handleView = (id) => {
+    nav(`/singleProduct/${id}`);
+  };
 
     const columns = useMemo(() => [
       {
@@ -55,68 +71,16 @@ const MyProductsTable = () => {
         name: 'Actions',
         cell: row => (
         <>
-            <FiEdit2
+            <AiFillEye
               className="icon edit-icon"
-              onClick={() => handleEdit(row.productId)}
+              onClick={() => handleView(row.productId)}
             />
             
-            <FiTrash2 
-              className="icon delete-icon"
-              onClick={() => handleDelete(row.productId)}
-              />
           </>
         ),
       },
     ], []);
   
-    const handleDelete = (id) => {
-      Swal.fire({
-        title: 'Are you sure?',
-        text: 'You will not be able to recover this product!',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Yes, delete it!',
-        confirmButtonColor: '#d33',
-        cancelButtonText: 'No, keep it'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          deleteProduct(id)
-            .then(() => {
-              Swal.fire({
-                title: 'Deleted!',
-                text: 'Your product has been deleted!',
-                icon: 'success',
-                confirmButtonText: 'Ok',
-                confirmButtonColor: '#E6400B' // This will set the confirm button color to red
-              });
-              // Here you could also add any additional actions on success (like refreshing the product list)
-            })
-            .catch(() => {
-              Swal.fire({
-                title: 'Failed!',
-                text: 'There was an issue deleting your product.',
-                icon: 'error',
-                confirmButtonText: 'Ok',
-                confirmButtonColor: '#E6400B' // This will set the confirm button color to red
-              });
-              // Here you could also add any additional actions on failure
-            })
-        } else if (result.dismiss === Swal.DismissReason.cancel) {
-          Swal.fire({
-            title: 'Cancelled!',
-            text: 'Your product is safe.',
-            icon: 'success',
-            confirmButtonText: 'Ok',
-            confirmButtonColor: '#E6400B' // This will set the confirm button color to red
-          });
-        }
-      })
-    };
-    
-    const handleEdit = (id) => {
-      nav(`/edit-product/${id}`);
-    };
-
     const customStyles = {
       header: {
         style: {
@@ -155,10 +119,16 @@ const MyProductsTable = () => {
     return (
       <Wrapper>
         <div className="container"> 
+        <SearchInput
+          type="text"
+          placeholder="Search products"
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+        />
           <DataTable
             title="Products"
             columns={columns}
-            data={products}
+            data={filteredProducts}
             pagination
             customStyles={customStyles}
           />
@@ -166,6 +136,17 @@ const MyProductsTable = () => {
       </Wrapper>
     );
 }
+
+const SearchInput = styled.input`
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+  font-size: 1.6rem;
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  border-radius: 3px;
+  outline: none;
+  text-transform: none;
+`;
+
 
 const Wrapper = styled.section`
   padding: 12rem 0;
@@ -210,4 +191,4 @@ const Wrapper = styled.section`
 
 `;
 
-export default MyProductsTable
+export default AllProductsTable

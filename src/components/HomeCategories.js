@@ -1,15 +1,17 @@
 import styled from "styled-components";
-import {ImMobile} from "react-icons/im"
+import {BiHealth} from "react-icons/bi"
 import {FiMonitor} from "react-icons/fi"
 import {ImHome} from "react-icons/im"
 import {GiDress} from "react-icons/gi"
 import {MdSportsFootball} from "react-icons/md"
 import {AiFillCar} from "react-icons/ai"
 import {GiBlackBook} from "react-icons/gi"
-import {MdOutlineLocalGroceryStore} from "react-icons/md"
+import {CgGym} from "react-icons/cg"
 import { NavLink } from "react-router-dom";
+import { useFilterContext } from "../context/filter_context";
 
 const HomeCategories = () => {
+  const {updateFilterValue} = useFilterContext();
   return (
     <Wrapper>
         <div className="container">
@@ -17,8 +19,11 @@ const HomeCategories = () => {
             <div className="grid grid-four-column">
                 <div className="services-2">
                 <div className="services-colum-2">
-                    <NavLink to="/products">
-                    <div>
+                <NavLink to={`/products`}>
+                    <div
+                    name="category"
+                    value={"Electronics"}
+                    onClick={updateFilterValue}>
                     <FiMonitor className="icon" />
                     <h3>Electronics</h3>
                     </div>
@@ -26,9 +31,12 @@ const HomeCategories = () => {
                 </div>
                 <div className="services-colum-2">
                     <NavLink to="/products">
-                    <div>
-                        <ImMobile className="icon" />
-                        <h3>Mobiles</h3>
+                    <div
+                    name="category"
+                    value="Health & Beauty"
+                    onClick={updateFilterValue}>
+                        <BiHealth className="icon" />
+                        <h3>Health & Beauty</h3>
                     </div>
                     </NavLink>
                 </div>
@@ -37,17 +45,23 @@ const HomeCategories = () => {
                 <div className="services-2">
                 <div className="services-colum-2">
                     <NavLink to="/products">
-                    <div>
+                    <div
+                    name="category"
+                    value="Home & Garden"
+                    onClick={updateFilterValue}>
                         <ImHome className="icon" />
-                        <h3>Home</h3>
+                        <h3>Home & Garden</h3>
                     </div>
                     </NavLink>
                 </div>
                 <div className="services-colum-2">
                     <NavLink to="/products">
-                    <div>
+                    <div
+                    name="category"
+                    value="Clothing"
+                    onClick={updateFilterValue}>
                         <GiDress className="icon" />
-                        <h3>Fashion</h3>
+                        <h3>Clothing</h3>
                     </div>
                     </NavLink>
                 </div>
@@ -56,17 +70,23 @@ const HomeCategories = () => {
                 <div className="services-2">
                 <div className="services-colum-2">
                     <NavLink to="/products">
-                    <div>
+                    <div
+                    name="category"
+                    value="Sports & Outdoors"
+                    onClick={updateFilterValue}>
                         <MdSportsFootball className="icon" />
-                        <h3>Sports</h3>
+                        <h3>Sports & Outdoors</h3>
                     </div>
                     </NavLink>
                 </div>
                 <div className="services-colum-2">
                     <NavLink to="/products">
-                    <div>
+                    <div
+                    name="category"
+                    value="Automotive"
+                    onClick={updateFilterValue}>
                         <AiFillCar className="icon" />
-                        <h3>Vehicles</h3>
+                        <h3>Automotive</h3>
                     </div>
                     </NavLink>
                 </div>
@@ -75,18 +95,24 @@ const HomeCategories = () => {
                 <div className="services-2">
                 <div className="services-colum-2">
                     <NavLink to="/products">
-                    <div>
+                    <div
+                    name="category"
+                    value="Books & Media"
+                    onClick={updateFilterValue}>
                         <GiBlackBook className="icon" />
-                        <h3>Books</h3>
+                        <h3>Books & Media</h3>
                     </div>
                     </NavLink>
                 
                 </div>
                 <div className="services-colum-2">
                     <NavLink to="/products">
-                    <div>
-                        <MdOutlineLocalGroceryStore className="icon" />
-                        <h3>Groceries</h3>
+                    <div
+                    name="category"
+                    value="Toys & Hobbies"
+                    onClick={updateFilterValue}>
+                        <CgGym className="icon" />
+                        <h3>Toys & Hobbies</h3>
                     </div>
                     </NavLink>
                 </div>
