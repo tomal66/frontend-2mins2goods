@@ -4,16 +4,22 @@ import styled from 'styled-components';
 import Nav from './Nav';
 import SellerNav from './SellerNav';
 import { useAuthContext } from '../context/auth_context';
-
+import AdminNav from './AdminNav';
 const Header = () => {
   const { role } = useAuthContext();
 
   return (
     <MainHeader>
-        <NavLink to="/">
+      <NavLink to="/">
         <img src="./images/logo.png" alt="2mins2goods" />
       </NavLink>
-      {role === "ROLE_SELLER" ? <SellerNav /> : <Nav />}
+      {role === 'ROLE_SELLER' ? (
+        <SellerNav />
+      ) : role === 'ROLE_ADMIN' ? ( // Check if the user has ROLE_ADMIN
+        <AdminNav /> // Render AdminNav for admin user
+      ) : (
+        <Nav />
+      )}
     </MainHeader>
   )
 }

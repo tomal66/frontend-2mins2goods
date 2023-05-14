@@ -357,7 +357,7 @@ const UpdateModalContainer = styled(ModalContainer)`
     font-size: 1.2rem; // Increase font size
     font-weight: 400;
     line-height: 1.5;
-    color: #495057;
+    color: #495057; 
     background-color: #fff;
     background-clip: padding-box;
     border: 1px solid #ced4da;

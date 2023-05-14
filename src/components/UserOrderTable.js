@@ -89,7 +89,7 @@ const UserOrderTable = () => {
               userOrders.map(async (order) => {
                 const product = await fetchProduct(order.productId);
                 const orderDetails = await fetchOrderById(order.orderId);
-          
+           
                 // Fetch the user by username
                 const seller = await fetchUserByUsername(product.sellerUsername);
           

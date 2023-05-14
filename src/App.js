@@ -25,6 +25,9 @@ import Checkout from './Checkout';
 import UserOrders from './UserOrders';
 import EditProfile from './EditProfile';
 import EditAddress from './EditAddress';
+import Users from './Users';
+import AllProducts from './AllProducts';
+import AllOrders from './AllOrders';
 
 
 function App() {
@@ -95,6 +98,9 @@ function App() {
 
           <Route element={<RequireAuth allowedRole={"ROLE_ADMIN"} />}>
             <Route path="/admin-dashboard" element={<AdminDashboard />} />
+            <Route path="/users" element={<Users />} />
+            <Route path="/allProducts" element={<AllProducts />} />
+            <Route path="/allOrders" element={<AllOrders />} />
           </Route>
 
         </Route>
