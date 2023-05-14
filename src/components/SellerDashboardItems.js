@@ -44,10 +44,10 @@ const SellerDashboardItems = () => {
                 </div>
                 <div className="services-2">
                 <div className="services-colum-2">
-                    <NavLink to="/products">
+                    <NavLink to="/edit-seller-profile">
                     <div>
                         <BsFillPersonFill className="icon" />
-                        <h3>My Profile</h3>
+                        <h3>Edit Profile</h3>
                     </div>
                     </NavLink>
                 </div>
@@ -70,7 +70,7 @@ const Wrapper = styled.section`
   .services-2,
   .services-3 {
     width: auto;
-    height: 30rem;
+    height: 20rem;
     display: flex;
     flex-direction: column;
     justify-content: center;

@@ -23,12 +23,12 @@ import AddProduct from './AddProduct';
 import EditProduct from './EditProduct';
 import Checkout from './Checkout';
 import UserOrders from './UserOrders';
+import EditProfile from './EditProfile';
+import EditAddress from './EditAddress';
 
 
 function App() {
-
   
-
   const theme = {
     colors: {
       heading: "rgb(24 24 29)",
@@ -79,6 +79,8 @@ function App() {
             <Route path="/cart" element={<Cart/>}/>
             <Route path="/checkout" element={<Checkout/>}/>
             <Route path="/myOrders" element={<UserOrders/>}/>
+            <Route path="/edit-user-profile" element={<EditProfile/>}/>
+            <Route path="/edit-user-address" element={<EditAddress/>}/>
           </Route>
 
           <Route element={<RequireAuth allowedRole={"ROLE_SELLER"} />}>
@@ -87,6 +89,8 @@ function App() {
             <Route path="/add-products" element={<AddProduct />} />
             <Route path="/edit-product/:id" element={<EditProduct />} />
             <Route path="/orders" element={<Orders />} />
+            <Route path="/edit-seller-profile" element={<EditProfile/>}/>
+            <Route path="/edit-seller-address" element={<EditAddress/>}/>
           </Route>
 
           <Route element={<RequireAuth allowedRole={"ROLE_ADMIN"} />}>

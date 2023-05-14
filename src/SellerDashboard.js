@@ -7,11 +7,16 @@ import SellerDashboardItems from "./components/SellerDashboardItems";
 
 const SellerDashboard = () => {
   return (
-    <>
+    <Wrapper>
       <SellerDashboardItems/>
-    </>
+    </Wrapper>
   );
 };
+
+const Wrapper = styled.div`
+  min-height: 70vh;
+`;
+
 
 
 export default SellerDashboard;

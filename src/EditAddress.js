@@ -2,26 +2,14 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useAuthContext } from './context/auth_context';
 import { NavLink, useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
+import {useUserContext} from './context/user_context';
 import useGeoLocation from './helpers/useGeoLocation';
 
-const Register = () => {
+const EditAddress = () => {
   const { register, isAuthenticated, error } = useAuthContext();
   const nav = useNavigate();
-  useEffect(() => {
-    if (isAuthenticated) { 
-      nav("/");
-    }
-  }, [isAuthenticated, nav]);
 
-  const [currentStep, setCurrentStep] = useState(1);
-  const [username, setUsername] = useState('');
-  const [firstname, setFirstname] = useState('');
-  const [lastname, setLastname] = useState('');
-  const [password, setPassword] = useState('');
-  const [mobile, setMobile] = useState('');
-  const [email, setEmail] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [role, setRole] = useState('ROLE_USER');
   const [address, setAddress] = useState('');
   const [zipcode, setZipcode] = useState('');
   const [city, setCity] = useState('');
@@ -33,46 +21,73 @@ const Register = () => {
 
   const [message, setMessage] = useState('');
 
-  const doPasswordsMatch = () => {
-    return password === confirmPassword;
-  };
+  const {user, updateUserAddress} = useUserContext();
+
+  useEffect(() => {
+    if (user) {
+        setAddress(user.address.address);
+        setZipcode(user.address.zipcode);
+        setCity(user.address.city)
+        setState(user.address.state)
+        setCountry(user.address.country)
+        setLatitude(user.address.latitude)
+        setLongitude(user.address.longitude)
+    }
+  }, [user]);
 
   const isLocationLoaded = () => {
     return location.loaded;
   };
 
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    setMessage('');
+    if (location.loaded && !location.error) {
+    }
+  }, [location]);
+  
+
+
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (doPasswordsMatch()) {
-
-      if(isLocationLoaded){
-        register(username, firstname, lastname, password, mobile, email, role, address, zipcode, city, state, country, latitude, longitude);
-        console.log('Username:', username, 'Firstname:', firstname, 'Lastname:', lastname, 'Password:', password, 'Mobile:', mobile, 'Email:', email);
-      }
-      else{
-        setMessage("Can't retrieve your location!");
-      }
-      
-    } else {
-      // Error alert message if the passwords don't match
-      setMessage("Passwords do not match!")
+    if (location.loaded && !location.error) {
+        setLatitude(location.coordinates.lat);
+        setLongitude(location.coordinates.long);
+    }
+    try {
+        
+        await updateUserAddress(user.username, {
+            address: address,
+            country: country,
+            zipcode: zipcode,
+            city: city,
+            longitude: longitude,
+            latitude: latitude,
+            state: state
+          });
+      Swal.fire({
+        title: 'Updated!',
+        text: 'Your profile has been updated.',
+        icon: 'success',
+        confirmButtonColor: '#E6400B', // change the button color here
+        confirmButtonText: 'Okay'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          nav('/'); // navigate to home page
+        }
+      })
+    } catch (error) {
+      Swal.fire({
+        title: 'Error!',
+        text: 'There was an error updating your profile.',
+        icon: 'error',
+        confirmButtonColor: '#d33', // change the button color here
+        confirmButtonText: 'Okay'
+      });
     }
   };
-
-  const handleNext = () => {
-    if (username && email && password && password.length >= 8 && doPasswordsMatch()) {
-      setCurrentStep(2);
-      setMessage("");
-    } else {
-      // Error alert message if any of the required fields are missing or invalid
-      if (!username) setMessage("Please enter a username!");
-      else if (!email) setMessage("Please enter an email address!");
-      else if (!password) setMessage("Please enter a password!");
-      else if (password.length < 8) setMessage("Password must be at least 8 characters long!");
-      else if (!doPasswordsMatch()) setMessage("Passwords do not match!");
-    }
-    
-  };
+  
+  
   
   useEffect(() => {
     if(error){
@@ -84,18 +99,11 @@ const Register = () => {
     setMessage('');
   }, []);
 
-  useEffect(() => {
-    setMessage('');
-    if (location.loaded && !location.error) {
-      setLatitude(location.coordinates.lat);
-      setLongitude(location.coordinates.long);
-    }
-  }, [location, setLatitude, setLongitude]);
 
   return (
     <Wrapper>
       <Container>
-        <Title>Register</Title>
+        <Title>Edit Address</Title>
         {
           message && (
             <Alert>
@@ -104,81 +112,7 @@ const Register = () => {
           )
         }
 
-        {currentStep === 1 && (
-          <Form onSubmit={(e) => {
-            e.preventDefault();
-            handleNext();
-          }}>
-            <Input
-              type="text"
-              id="username"
-              name="username"
-              placeholder="Username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              required
-            />
-            <Input
-              type="text"
-              id="firstname"
-              name="firstname"
-              placeholder="First Name"
-              value={firstname}
-              onChange={(e) => setFirstname(e.target.value)}
-              required
-            />
-            <Input
-              type="text"
-              id="lastname"
-              name="lastname"
-              placeholder="Last Name"
-              value={lastname}
-              onChange={(e) => setLastname(e.target.value)}
-              required
-            />
-            <Input
-              type="email"
-              id="email"
-              name="email"
-              placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-            <Input
-              type="password"
-              id="password"
-              name="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-            <Input
-              type="password"
-              id="confirmPassword"
-              name="confirmPassword"
-              placeholder="Confirm Password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              required
-            />
-            <Input
-              type="tel"
-              id="mobile"
-              name="mobile"
-              placeholder="Mobile Number"
-              value={mobile}
-              onChange={(e) => setMobile(e.target.value)}
-              required
-            />
-
-            <Button type="submit">Next</Button>
-          </Form>
-        )}
-
-        {currentStep === 2 && (
-          <Form onSubmit={handleSubmit}>
+        <Form onSubmit={handleSubmit}>
             <Input
               type="text"
               id="address"
@@ -244,22 +178,14 @@ const Register = () => {
           required
           readonly
         />
-        <Button type="submit">Register</Button>
+        <Button type="submit">Update</Button>
       </Form>
-    )}
 
-    <Options>
-      {currentStep === 1 && (
-        <Option onClick={() => nav("/login")}>Already have an account? Sign In</Option>
-      )}
-      {currentStep === 2 && (
-        <Option onClick={() => setCurrentStep(1)}>Back</Option>
-      )}
-    </Options>
   </Container>
 </Wrapper>
   );
-};
+}
+
 
 const Wrapper = styled.div`
   display: flex;
@@ -362,4 +288,4 @@ text-decoration: underline;
 }
 `;
 
-export default Register;
+export default EditAddress

@@ -53,8 +53,27 @@ export const UserProvider = ({ children }) => {
         }
     };
 
+    const updateUser = async (userDto) => {
+        try {
+          const response = await axios.put(`http://localhost:8080/api/user`, userDto);
+          const updatedUser = response.data;
+    
+          // Dispatch action to update the user in the state
+          dispatch({ type: 'SET_USER', payload: updatedUser });
+    
+          return updatedUser;
+        } catch (error) {
+          console.error('Error updating user:', error);
+        }
+      };
+
+      const updateUserAddress = async (username, address) => {
+        const response = await axios.put(`http://localhost:8080/api/address/${username}`, address);
+        dispatch({ type: 'UPDATE_USER_ADDRESS', payload: address });
+      }
+
     return (
-        <UserContext.Provider value={{ ...state, setUser, clearUser, fetchUserByUsername }}>
+        <UserContext.Provider value={{ ...state, setUser, clearUser, fetchUserByUsername, updateUser, updateUserAddress }}>
             {children}
         </UserContext.Provider>
     );

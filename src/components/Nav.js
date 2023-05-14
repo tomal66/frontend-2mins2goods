@@ -57,7 +57,7 @@ const Nav = () => {
     const DropDownMenu = styled.div`
       display: ${({ show }) => (show ? "block" : "none")};
       position: absolute;
-      min-width: 110px;
+      min-width: 115px;
       background-color: ${({ theme }) => theme.colors.white};
       box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
       padding: 0.2rem;
@@ -281,13 +281,23 @@ const Nav = () => {
                   //onMouseLeave={() => setShowDropDown(false)}
                 />
                 <DropDownMenu show={showDropDown}>
-                  <NavLink to="editProfile">
+                  <NavLink to="edit-user-profile">
                     <DropDownItem
                       onMouseEnter={() => setShowDropDown(true)}
                       onMouseLeave={() => setShowDropDown(false)}
                       onClick={handleDropdownToggle}
                     >
                       Edit Profile
+                    </DropDownItem>
+                  </NavLink>
+
+                  <NavLink to="edit-user-address">
+                    <DropDownItem
+                      onMouseEnter={() => setShowDropDown(true)}
+                      onMouseLeave={() => setShowDropDown(false)}
+                      onClick={handleDropdownToggle}
+                    >
+                      Edit Address
                     </DropDownItem>
                   </NavLink>
                   

@@ -59,13 +59,23 @@ const SellerNav = () => {
                   //onMouseLeave={() => setShowDropDown(false)}
                 />
                 <DropDownMenu show={showDropDown}>
-                  <NavLink to="editProfile">
+                <NavLink to="edit-seller-profile">
                     <DropDownItem
                       onMouseEnter={() => setShowDropDown(true)}
                       onMouseLeave={() => setShowDropDown(false)}
                       onClick={handleDropdownToggle}
                     >
                       Edit Profile
+                    </DropDownItem>
+                  </NavLink>
+
+                  <NavLink to="edit-seller-address">
+                    <DropDownItem
+                      onMouseEnter={() => setShowDropDown(true)}
+                      onMouseLeave={() => setShowDropDown(false)}
+                      onClick={handleDropdownToggle}
+                    >
+                      Edit Address
                     </DropDownItem>
                   </NavLink>
                   
@@ -149,7 +159,7 @@ const ProfileIcon = styled(FaUserAlt)`
     const DropDownMenu = styled.div`
       display: ${({ show }) => (show ? "block" : "none")};
       position: absolute;
-      min-width: 110px;
+      min-width: 115px;
       background-color: ${({ theme }) => theme.colors.white};
       box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
       padding: 0.2rem;
