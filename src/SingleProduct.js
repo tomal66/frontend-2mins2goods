@@ -7,11 +7,15 @@ import MyImage from "./components/MyImage";
 import { Container } from "./styles/Container";
 import FormatPrice from "./helpers/FormatPrice";
 import { MdSecurity } from "react-icons/md";
-import { TbTruckDelivery, TbReplace } from "react-icons/tb";
+import { TbTruckDelivery, TbReplace} from "react-icons/tb";
+import {RiCustomerService2Fill} from 'react-icons/ri'
 import Star from "./components/Star";
 import AddToCart from "./components/AddToCart";
 import Loading from "./styles/Loading";
 import axios from "axios";
+import { Modal } from "@mui/material";
+import {BsBoxSeamFill} from 'react-icons/bs'
+import Review from "./components/Review";
 
 const API = "http://localhost:8080/api/product";
 
@@ -36,6 +40,8 @@ const SingleProduct = () => {
   const [averageRating, setAverageRating] = useState(0);
   const [totalReviews, setTotalReviews] = useState(0);
   const [reviews, setReviews] = useState([]);
+  const [isModalOpen, setModalOpen] = useState(false);
+
 
 
   async function fetchProductReviewData(productId) {
@@ -56,8 +62,6 @@ const SingleProduct = () => {
       setAverageRating(averageRating);
       setTotalReviews(totalReviews);
       setReviews(reviews);
-      console.log(productId);
-      console.log(reviews);
     } catch (error) {
       console.error("Error fetching product review data:", error);
     }
@@ -74,6 +78,10 @@ const SingleProduct = () => {
     }
   };
 
+  const handleStarClick = () => {
+    console.log("clicked")
+    setModalOpen(true);
+  };
   useEffect(() => {
     getSingleProduct(`${API}/${id}`);
   }, []);
@@ -109,31 +117,35 @@ const SingleProduct = () => {
           {/* product dAta  */}
           <div className="product-data">
             <h2>{title}</h2>
-            <Star stars={averageRating} reviews={totalReviews} />
+            <div onClick={totalReviews > 0 ? handleStarClick : null}>
+              <Star stars={averageRating} reviews={totalReviews}/>
+            </div>
+            
 
             <p className="product-data-price">
               Price: <FormatPrice price={price} />
             </p>
             <p>{description}</p>
             <div className="product-data-warranty">
-              <div className="product-warranty-data">
-                <TbTruckDelivery className="warranty-icon" />
-                <p>Pickup Available</p>
-              </div>
-
-              <div className="product-warranty-data">
-                <TbReplace className="warranty-icon" />
-                <p>30 Days Replacement</p>
-              </div>
-
-              <div className="product-warranty-data">
+              
+            <div className="product-warranty-data">
                 <TbTruckDelivery className="warranty-icon" />
                 <p>Home Delivered </p>
               </div>
 
               <div className="product-warranty-data">
-                <MdSecurity className="warranty-icon" />
-                <p>2 Year Warranty </p>
+                <BsBoxSeamFill className="warranty-icon" />
+                <p>Pickup Available</p>
+              </div>
+
+              <div className="product-warranty-data">
+                <TbReplace className="warranty-icon" />
+                <p>Easy Return</p>
+              </div>
+
+              <div className="product-warranty-data">
+                <RiCustomerService2Fill className="warranty-icon" />
+                <p>Customer Support </p>
               </div>
             </div>
 
@@ -153,6 +165,25 @@ const SingleProduct = () => {
             {quantity > 0 && <AddToCart product={singleProduct} />}
           </div>
         </div>
+
+        {/* Review Modal */}
+        <Modal
+            open={isModalOpen}
+            onClose={() => setModalOpen(false)}
+            aria-labelledby="review-modal-title"
+            aria-describedby="review-modal-description"
+        >
+            <ModalContainer>
+                <h3 id="review-modal-title">Reviews</h3>
+                {reviews.map((review) => (
+                  <Review key={review.reviewId} review={review} />
+                ))}
+
+            </ModalContainer>
+        </Modal>
+        
+
+
       </Container>
     </Wrapper>
   );
@@ -240,6 +271,36 @@ const Wrapper = styled.section`
   }
   @media (max-width: ${({ theme }) => theme.media.mobile}) {
     padding: 0 2.4rem;
+  }
+`;
+
+const ModalContainer = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 2rem;
+  outline: none;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  max-width: 500px;
+  height: 50vh; // adjusts the height to be 80% of the viewport height
+  overflow-y: auto; // enables scrolling on the y-axis
+
+  h3 {
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+  }
+
+  p {
+    font-size: 1.6rem;
+    margin-bottom: 1rem;
+    text-align: left; /* Added to align the order info to the left */
+  }
+  p strong {
+    font-weight: bold;
   }
 `;
 

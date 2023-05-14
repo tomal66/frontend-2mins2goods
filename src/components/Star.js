@@ -23,7 +23,9 @@ const Star = ({ stars, reviews }) => {
     <Wrapper>
       <div className="icon-style">
         {ratingStar}
-        <p>({reviews} {reviews > 1 ? "reviews" : "review"})</p>
+        {reviews !== undefined && (
+          <p>({reviews} {reviews > 1 ? "reviews" : "review"})</p>
+        )}
       </div>
     </Wrapper>
 
