@@ -2,8 +2,7 @@ import React, {useMemo, useEffect, useState} from 'react'
 import { useOrderContext } from '../context/order_context'; // change to use the order context
 import DataTable from 'react-data-table-component'
 import styled from 'styled-components'
-import { FiEdit2, FiTrash2 } from 'react-icons/fi';
-import { AiFillEye } from 'react-icons/ai'
+import { AiFillEye, AiFillStar } from 'react-icons/ai'
 import { useAuthContext } from '../context/auth_context';
 import ImageCell from './ImageCell'; // assuming you also have image cell for order's product image
 import Swal from 'sweetalert2';
@@ -11,9 +10,10 @@ import { useNavigate } from 'react-router-dom';
 import { useProductContext } from '../context/productcontext';
 import { Modal, Button } from '@mui/material';
 import { useUserContext } from '../context/user_context';
+import { TiCancel }from 'react-icons/ti'
 
-const MyOrdersTable = () => {
-    const { fetchSellerOrders, sellerOrders, fetchOrderById, updateOrderItem } = useOrderContext(); // change to use the order context
+const UserOrderTable = () => {
+    const { fetchOrders, userOrders, fetchOrderById, cancelOrderItem } = useOrderContext(); // change to use the order context
     const {username} = useAuthContext();
     const { fetchProduct } = useProductContext();
     const [orders, setOrders] = useState([]); // New state for processed orders data
@@ -28,65 +28,45 @@ const MyOrdersTable = () => {
         setSelectedOrder(order);
         setShowModal(true);
     };
-
-    const handleStatusUpdate = async () => {
-        try {
-          // Call the updateOrderItem function with the selected order and the new status
-          const orderItemDto = {
-            itemId: selectedOrder.itemId,
-            quantity: selectedOrder.quantity,
-            orderId: selectedOrder.orderId,
-            productId: selectedOrder.productId,
-            status: selectedStatus,
-            deliveryMethod: selectedOrder.deliveryMethod
-          }
-          await updateOrderItem(orderItemDto); 
-          setShowUpdateModal(false);
-          Swal.fire({
-            title: 'Updated!',
-            text: 'The order status has been updated!',
-            icon: 'success',
-            confirmButtonText: 'Ok',
-            confirmButtonColor: '#E6400B'
-          });
-
-          // Reload orders after successful update
-          fetchSellerOrders(username);
-      
-        } catch (error) {
-          Swal.fire({
-            title: 'Failed!',
-            text: 'There was an issue updating the order status.',
-            icon: 'error',
-            confirmButtonText: 'Ok',
-            confirmButtonColor: '#E6400B'
-          });
+    
+    const handleCancel = async (orderItem) => {
+        const result = await Swal.fire({
+          title: 'Are you sure?',
+          text: 'You are about to cancel the order item.',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'Yes, cancel it!',
+          cancelButtonText: 'No, keep it'
+        });
+    
+        if (result.isConfirmed) {
+          await cancelOrderItem(orderItem.itemId);
+          await fetchOrders(username);
         }
       };
-      
       
 
     
     useEffect(()=>{
-      fetchSellerOrders(username);
+      fetchOrders(username);
     },[username])
 
     useEffect(() => {
         // Fetch product details for each order
         const fetchProductDetails = async () => {
             const ordersWithProductDetails = await Promise.all(
-              sellerOrders.map(async (order) => {
+              userOrders.map(async (order) => {
                 const product = await fetchProduct(order.productId);
                 const orderDetails = await fetchOrderById(order.orderId);
           
                 // Fetch the user by username
-                const user = await fetchUserByUsername(orderDetails.buyerUsername);
+                const seller = await fetchUserByUsername(product.sellerUsername);
           
                 return {
                   ...order,
                   product,
                   orderDetails,
-                  user, // Add the fetched user to the order object
+                  seller, // Add the fetched user to the order object
                 };
               })
             );
@@ -95,7 +75,7 @@ const MyOrdersTable = () => {
           
           
         fetchProductDetails();
-      }, [sellerOrders, fetchProduct]);
+      }, [userOrders, fetchProduct]);
 
     const nav = useNavigate();
 
@@ -125,17 +105,30 @@ const MyOrdersTable = () => {
         sortable: true,
       },
       {
+        name: 'Price',
+        selector: row => row.product.price*row.quantity,
+        sortable: true,
+      },
+      {
         name: 'Actions',
         cell: row => (
-        <>
-            <AiFillEye
-              className="icon edit-icon"
-              onClick={() => handleView(row)}
-            />
-            {row.status !== "cancelled" && (<FiEdit2
-              className="icon edit-icon"
-              onClick={() => { setSelectedOrder(row); setShowUpdateModal(true); }}
-            />)}
+            <>
+                <AiFillEye
+                className="icon edit-icon"
+                onClick={() => handleView(row)}
+                />
+                {(row.status === "Processing" || row.status === "Pending") && (
+                <TiCancel
+                    className="icon edit-icon"
+                    onClick={() => handleCancel(row)}
+                />
+                )}
+                {row.status === "Delivered" && (
+                <AiFillStar
+                    className="icon edit-icon"
+                    onClick={() => handleView(row)}
+                />
+                )}
           </>
         ),
       },
@@ -201,7 +194,7 @@ const MyOrdersTable = () => {
                 {selectedOrder && (
                 <div id="modal-description">
                     {/* Display the order information here */}
-                    {/* Existing code */}
+                    {}
                     <h3>Order #{selectedOrder.orderId}</h3>
                     <p>
                     <strong>Status:</strong> {selectedOrder.status}
@@ -213,66 +206,50 @@ const MyOrdersTable = () => {
                     <strong>Delivery:</strong> {selectedOrder.deliveryMethod}
                     </p>
                     <p>
-                    <strong>Buyer:</strong>{" "}
-                    {selectedOrder.user.firstname + " " + selectedOrder.user.lastname}
+                    <strong>Created:</strong>{" "}
+                    {new Date(selectedOrder.orderDetails.createdAt).toLocaleString(undefined, {
+                        year: "numeric",
+                        month: "numeric",
+                        day: "numeric",
+                        hour: "numeric",
+                        minute: "numeric",
+                        timeZoneName: "short",
+                    })}
                     </p>
-                    {selectedOrder.deliveryMethod !== "pickup" && (
+                    <p>
+                    <strong>Updated:</strong>{" "}
+                    {new Date(selectedOrder.orderDetails.updatedAt).toLocaleString(undefined, {
+                        year: "numeric",
+                        month: "numeric",
+                        day: "numeric",
+                        hour: "numeric",
+                        minute: "numeric",
+                        timeZoneName: "short",
+                    })}
+                    </p>
+                    <p>
+                    <strong>Seller:</strong>{" "}
+                    {selectedOrder.seller.firstname + " " + selectedOrder.seller.lastname}
+                    </p>
+                    {selectedOrder.deliveryMethod !== "cod" && (
                     <>
                         <p>
                         <strong>Address:</strong>{" "}
-                        {selectedOrder.user.address.address}
+                        {selectedOrder.seller.address.address}
                         </p>
                         <p>
-                        <strong>City:</strong> {selectedOrder.user.address.city}
+                        <strong>City:</strong> {selectedOrder.seller.address.city}
                         </p>
                     </>
                     )}
                     <p>
                     <strong>Mobile:</strong>{" "}
-                    {selectedOrder.user.mobile}
+                    {selectedOrder.seller.mobile}
                     </p>
                 </div>
                 )}
             </ModalContainer>
         </Modal>
-
-        {/* {Modal for update status} */}
-        <Modal
-        open={showUpdateModal}
-        onClose={() => setShowUpdateModal(false)}
-        aria-labelledby="modal-title-update"
-        aria-describedby="modal-description-update"
-        >
-            <UpdateModalContainer>
-            {selectedOrder && (
-                <div id="modal-description-update">
-                <h3>Update Order Status</h3>
-                <p>
-                    <strong>Order ID:</strong> {selectedOrder.orderId}
-                </p>
-                <select value={selectedStatus} onChange={e => setSelectedStatus(e.target.value)}>
-                    <option value="">Select status</option>
-                    <option value="Pending">Pending</option>
-                    <option value="Processing">Processing</option>
-                    {selectedOrder.deliveryMethod === "pickup" ? (
-                    <option value="Ready">Ready</option>
-                    ) : (
-                    <>
-                        <option value="Shipped">Shipped</option>
-                    </>
-                    )}
-                    <option value="Delivered">Delivered</option>
-                </select>
-                <button onClick={handleStatusUpdate}>Update Status</button>
-                </div>
-            )}
-            </UpdateModalContainer>
-
-        </Modal>
-
-
-
-
       </Wrapper>
     );
 }
@@ -384,4 +361,4 @@ const UpdateModalContainer = styled(ModalContainer)`
 
 
 
-export default MyOrdersTable
+export default UserOrderTable

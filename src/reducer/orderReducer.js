@@ -29,6 +29,16 @@ const orderReducer = (state, action) => {
         sellerOrders: updatedSellerOrders,
       };
     }
+
+    if (action.type === "CANCEL_ORDER_ITEM") {
+      const updatedOrders = state.userOrders.map((order) => 
+        order.id === action.payload.id ? action.payload : order
+      );
+      return {
+        ...state,
+        userOrders: updatedOrders,
+      };
+    }
   
     return state;
   };

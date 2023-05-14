@@ -68,6 +68,16 @@ const OrderProvider = ({ children }) => {
       console.error('There was an error updating the order item:', error);
     }
 };
+  const cancelOrderItem = async (itemId) => {
+    try {
+      const response = await axios.put(`http://localhost:8080/api/orders/${itemId}/cancel`);
+      if (response.status === 200) {
+        dispatch({ type: "CANCEL_ORDER_ITEM", payload: response.data });
+      }
+    } catch (error) {
+      console.error("There was an error cancelling the order item:", error);
+    }
+  };
 
 
   useEffect(() => {
@@ -78,6 +88,10 @@ const OrderProvider = ({ children }) => {
     }
   }, [username, role]);
 
+  useEffect(() => {
+    console.log(state.userOrders)
+  }, [state.userOrders]);
+
   
 
   return (
@@ -86,7 +100,8 @@ const OrderProvider = ({ children }) => {
         ...state,
         createOrder,
         fetchSellerOrders,
-        fetchOrderById, updateOrderItem
+        fetchOrderById, updateOrderItem, fetchOrders,
+        cancelOrderItem
       }}>
       {children}
     </OrderContext.Provider>
